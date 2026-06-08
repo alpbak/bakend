@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  docs-check:
+    name: Documentation structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify required documentation paths
+        run: |
+          required_paths=(
+            AGENTS.md
+            docs/README.md
+            docs/ARCHITECTURE.md
+            docs/TECH-STACK.md
+            docs/user-guide/getting-started.md
+            docs/api/rest-api.md
+            docs/sdk/javascript.md
+            docs/llm/product-overview.md
+            docs/llm/architecture-summary.md
+            docs/rfcs/README.md
+          )
+          for path in "${required_paths[@]}"; do
+            if [ ! -f "$path" ]; then
+              echo "Missing required file: $path"
+              exit 1
+            fi
+          done
+          echo "All required documentation paths exist."
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install
+      - run: bun run typecheck
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install
+      - run: bun test

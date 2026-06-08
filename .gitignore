@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Bun
+.bun/
+
+# Build output
+dist/
+out/
+
+# Database and storage
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+storage/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+coverage/

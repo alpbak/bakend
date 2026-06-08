@@ -1,0 +1,17 @@
+{
+  "name": "bakend",
+  "version": "0.0.0",
+  "description": "PocketBase + Functions + Jobs — the simplest backend platform for MVPs",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "lint": "echo 'Lint not configured yet'"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.7.0"
+  }
+}
