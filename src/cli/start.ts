@@ -12,11 +12,15 @@ import { closeDatabase, initDatabase } from "../core/database/init.ts";
 import { createEventBus } from "../core/events/create-event-bus.ts";
 import type { EventBus } from "../core/events/types.ts";
 import { createLogger } from "../core/logging/logger.ts";
+import { createFunctionsEngine } from "../core/functions/create-functions-engine.ts";
+import type { FunctionsEngine } from "../core/functions/types.ts";
 import { createServer } from "../core/server/create-server.ts";
 import type { BakendServer } from "../core/server/create-server.ts";
 import { VERSION_DISPLAY } from "../version.ts";
 
-export interface StartOptions extends LoadConfigOptions {}
+export interface StartOptions extends LoadConfigOptions {
+  watch?: boolean;
+}
 
 export interface StartResult {
   config: ReturnType<typeof loadConfig>;
@@ -25,6 +29,7 @@ export interface StartResult {
   eventBus: EventBus;
   collections: CollectionsEngine;
   recordStore: RecordStore;
+  functions: FunctionsEngine;
   shutdown: () => void;
 }
 
@@ -46,8 +51,20 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
   const recordStore = createRecordStore({ db, collections, logger, eventBus });
 
   const configPath = options.configPath ?? DEFAULT_CONFIG_PATH;
-  const collectionsDir = join(dirname(configPath), "collections");
+  const projectDir = dirname(configPath);
+  const collectionsDir = join(projectDir, "collections");
+  const functionsDir = join(projectDir, "functions");
+
   loadCollectionDefinitions(collections, collectionsDir, logger);
+
+  const functions = createFunctionsEngine({
+    eventBus,
+    db,
+    logger,
+    functionsDir,
+    watch: options.watch ?? false,
+  });
+  await functions.load();
 
   const server = createServer(config, logger, { collections, recordStore });
 
@@ -62,6 +79,7 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
 
     shuttingDown = true;
     logger.info("Shutting down");
+    functions.shutdown();
     server.stop();
     closeDatabase(db);
   };
@@ -81,6 +99,7 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
     eventBus,
     collections,
     recordStore,
+    functions,
     shutdown,
   };
 }

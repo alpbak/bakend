@@ -6,15 +6,22 @@ function printUsage(): void {
   console.log(`Bakend — PocketBase + Functions + Jobs
 
 Usage:
-  bak start [--config <path>]   Start the Bakend server
-  bak --help                  Show this help message
+  bak start [--config <path>] [--watch]   Start the Bakend server
+  bak dev [--config <path>]               Start with function hot reload
+  bak --help                              Show this help message
 `);
 }
 
-function parseArgs(argv: string[]): { command?: string; configPath?: string; help: boolean } {
+function parseArgs(argv: string[]): {
+  command?: string;
+  configPath?: string;
+  watch: boolean;
+  help: boolean;
+} {
   const args = argv.slice(2);
   let command: string | undefined;
   let configPath: string | undefined;
+  let watch = false;
   let help = false;
 
   for (let index = 0; index < args.length; index += 1) {
@@ -34,6 +41,11 @@ function parseArgs(argv: string[]): { command?: string; configPath?: string; hel
       continue;
     }
 
+    if (arg === "--watch") {
+      watch = true;
+      continue;
+    }
+
     if (!command) {
       command = arg;
       continue;
@@ -42,12 +54,12 @@ function parseArgs(argv: string[]): { command?: string; configPath?: string; hel
     throw new Error(`Unknown argument: ${arg}`);
   }
 
-  return { command, configPath, help };
+  return { command, configPath, watch, help };
 }
 
 async function main(): Promise<void> {
   try {
-    const { command, configPath, help } = parseArgs(process.argv);
+    const { command, configPath, watch, help } = parseArgs(process.argv);
 
     if (help || !command) {
       printUsage();
@@ -55,14 +67,19 @@ async function main(): Promise<void> {
       return;
     }
 
-    if (command !== "start") {
-      console.error(`Unknown command: ${command}`);
-      printUsage();
-      process.exit(1);
+    if (command === "start") {
+      await start({ configPath, watch });
       return;
     }
 
-    await start({ configPath });
+    if (command === "dev") {
+      await start({ configPath, watch: true });
+      return;
+    }
+
+    console.error(`Unknown command: ${command}`);
+    printUsage();
+    process.exit(1);
   } catch (error) {
     console.error(error instanceof Error ? error.message : String(error));
     process.exit(1);

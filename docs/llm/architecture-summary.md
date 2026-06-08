@@ -18,7 +18,7 @@ Bakend Core (src/core/)
   ├── database/     SQLite
   ├── collections/  Dynamic schemas, validation, records (Milestones 3–4 — implemented)
   ├── events/       Event Bus (Milestone 2 — implemented)
-  ├── functions/    TypeScript triggers
+  ├── functions/    TypeScript triggers (Milestone 5 — implemented)
   ├── jobs/         Cron scheduler
   ├── auth/         JWT + sessions
   └── storage/      Filesystem

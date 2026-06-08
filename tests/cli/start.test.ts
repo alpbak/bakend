@@ -139,4 +139,60 @@ describe("start", () => {
     const listBody = (await listResponse.json()) as { items: unknown[] };
     expect(listBody.items).toHaveLength(1);
   });
+
+  test("runs functions on record creation", async () => {
+    tempDir = mkdtempSync(join(tmpdir(), "bakend-start-"));
+    const configPath = join(tempDir, "bakend.json");
+    const collectionsDir = join(tempDir, "collections");
+    const functionsDir = join(tempDir, "functions");
+    const postsFunctionsDir = join(functionsDir, "posts");
+    const markerPath = join(tempDir, "function-ran.txt");
+
+    mkdirSync(collectionsDir, { recursive: true });
+    mkdirSync(postsFunctionsDir, { recursive: true });
+
+    writeFileSync(
+      configPath,
+      JSON.stringify({
+        port: 19083,
+        database: join(tempDir, "bakend.db"),
+        storage: join(tempDir, "storage"),
+        logLevel: "ERROR",
+      }),
+    );
+
+    writeFileSync(
+      join(collectionsDir, "posts.json"),
+      JSON.stringify({
+        name: "posts",
+        fields: [{ name: "title", type: "string", required: true }],
+      }),
+    );
+
+    writeFileSync(
+      join(postsFunctionsDir, "handler.ts"),
+      `import { onCreate } from "bakend/functions";
+
+onCreate("posts", async ({ record }) => {
+  await Bun.write(${JSON.stringify(markerPath)}, String(record.title));
+});
+`,
+    );
+
+    result = await start({ configPath });
+
+    expect(result.functions.list()).toHaveLength(1);
+
+    const createResponse = await fetch(`http://127.0.0.1:${result.server.port}/api/posts`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: "FromFunction" }),
+    });
+
+    expect(createResponse.status).toBe(201);
+    await result.eventBus.flush();
+
+    const marker = await Bun.file(markerPath).text();
+    expect(marker).toBe("FromFunction");
+  });
 });

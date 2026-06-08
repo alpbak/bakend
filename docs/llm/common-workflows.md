@@ -65,14 +65,23 @@ See `docs/api/rest-api.md` for full API details.
 
 ## 4. Write a Function
 
-> Planned — Milestone 5
+Create `functions/posts/notify.ts`:
 
 ```ts
-// functions/posts/notify.ts
-export default async ({ db, logger }) => {
-  logger.info("Post created");
-};
+import { onCreate } from "bakend/functions";
+
+onCreate("posts", async ({ record, logger }) => {
+  logger.info(`Post created: ${record.title}`);
+});
 ```
+
+Run with hot reload:
+
+```bash
+bak dev
+```
+
+Creating a post via `POST /api/posts` triggers the function after the record is saved.
 
 ## 5. Write a Job
 

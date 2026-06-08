@@ -46,12 +46,12 @@ eventBus.flush();                     // await pending async handlers (tests)
 - Collection records: `{collection}.created|updated|deleted` (Milestone 4)
 - Auth: `auth.login|logout|register|password_reset`
 - Storage: `storage.uploaded|deleted`
-- Function: `function.started|completed|failed`
+- Function: `function.started|completed|failed` (Milestone 5 — implemented)
 - Job: `job.started|completed|failed`
 
 ## Deferred
 
 - Wildcard subscriptions
 - Handler priority tiers (logging → realtime → functions → plugins)
-- Record CRUD/function/job/realtime emitters and listeners
+- Function/job/realtime emitters and listeners (function lifecycle implemented in M5)
 - Persistent event log

@@ -7,9 +7,12 @@
   "bin": {
     "bak": "./src/index.ts"
   },
+  "exports": {
+    "./functions": "./src/core/functions/triggers.ts"
+  },
   "scripts": {
     "start": "bun run src/index.ts start",
-    "dev": "bun run src/index.ts start",
+    "dev": "bun run src/index.ts dev",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
     "lint": "echo 'Lint not configured yet'"

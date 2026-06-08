@@ -6,6 +6,13 @@ All notable changes to Bakend are documented in this file.
 
 ### Added
 
+- Milestone 5 Functions Engine: TypeScript function discovery, trigger registration (`onCreate`, `onUpdate`, `onDelete`, `onLogin`, `onRegister`), Event Bus execution, lifecycle events, and hot reload.
+- `bakend/functions` package export for trigger helpers.
+- `bak dev` command and `bak start --watch` for function hot reload.
+- Functions wired into `start()` via `StartResult.functions`.
+- User guide: `docs/user-guide/functions.md`.
+- LLM reference: `docs/llm/functions.md`.
+- RFC-0003 Implementation section.
 - Milestone 4 CRUD API: auto-generated REST endpoints for all collections (`GET/POST /api/{collection}`, `GET/PUT/DELETE /api/{collection}/:id`).
 - `RecordStore` API: `create`, `get`, `list`, `update`, `delete` with validation and SQLite persistence.
 - Record serialization layer: camelCase API fields, snake_case SQLite columns, type coercion for boolean/json.

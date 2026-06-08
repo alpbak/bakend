@@ -6,9 +6,9 @@ The `bak` executable is the primary interface for Bakend projects.
 
 | Command | Description | Status |
 |---|---|---|
-| `bak start [--config <path>]` | Start the Bakend server | Implemented |
+| `bak start [--config <path>] [--watch]` | Start the Bakend server | Implemented |
+| `bak dev [--config <path>]` | Start with function hot reload | Implemented |
 | `bak init [name]` | Create a new Bakend project | Planned |
-| `bak dev` | Start with hot reload for functions | Planned |
 | `bak migrate` | Run database migrations | Planned |
 | `bak functions` | List and manage functions | Planned |
 | `bak jobs` | List and manage jobs | Planned |
@@ -21,6 +21,14 @@ bun run start
 
 ```bash
 bun run src/index.ts start --config ./bakend.json
+```
+
+```bash
+bun run src/index.ts dev
+```
+
+```bash
+bun run src/index.ts start --watch
 ```
 
 ```bash
