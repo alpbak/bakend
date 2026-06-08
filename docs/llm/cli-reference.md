@@ -2,33 +2,29 @@
 
 The `bak` executable is the primary interface for Bakend projects.
 
-> Status: Planned — commands will be implemented across Milestones 1, 5, 6, and 12.
-
 ## Commands
 
-| Command | Description | Milestone |
+| Command | Description | Status |
 |---|---|---|
-| `bak init [name]` | Create a new Bakend project | 1 |
-| `bak start` | Start the Bakend server | 1 |
-| `bak dev` | Start with hot reload for functions | 5 |
-| `bak migrate` | Run database migrations | 3 |
-| `bak functions` | List and manage functions | 5 |
-| `bak jobs` | List and manage jobs | 6 |
+| `bak start [--config <path>]` | Start the Bakend server | Implemented |
+| `bak init [name]` | Create a new Bakend project | Planned |
+| `bak dev` | Start with hot reload for functions | Planned |
+| `bak migrate` | Run database migrations | Planned |
+| `bak functions` | List and manage functions | Planned |
+| `bak jobs` | List and manage jobs | Planned |
 
 ## Examples
 
 ```bash
-bak init myapp
-cd myapp
-bak start
+bun run start
 ```
 
 ```bash
-bak dev
+bun run src/index.ts start --config ./bakend.json
 ```
 
 ```bash
-bak migrate
+bun run src/index.ts --help
 ```
 
 ## Configuration
@@ -39,6 +35,16 @@ Default config file: `bakend.json`
 {
   "port": 8080,
   "database": "./bakend.db",
-  "storage": "./storage"
+  "storage": "./storage",
+  "logLevel": "INFO"
 }
 ```
+
+Environment overrides:
+
+- `BAKEND_PORT`
+- `BAKEND_DATABASE`
+- `BAKEND_STORAGE`
+- `BAKEND_LOG_LEVEL`
+
+Log levels: `DEBUG`, `INFO`, `WARN`, `ERROR`

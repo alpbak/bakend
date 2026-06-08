@@ -1,20 +1,28 @@
 # Common Workflows
 
-> Status: Planned — workflows become actionable as milestones ship.
-
 ## 1. Create and Start a Project
 
 ```bash
-bak init myapp
-cd myapp
-bak start
+git clone https://github.com/alpbak/bakend.git
+cd bakend
+bun install
+cp bakend.json.example bakend.json
+bun run start
 ```
 
-Server listens on `:8080`. SQLite database created automatically.
+Server listens on `:8080`. SQLite database is created automatically.
+
+Verify:
+
+```bash
+curl http://localhost:8080/health
+```
 
 ## 2. Define a Collection
 
-Create a collection definition (format TBD in Milestone 3):
+> Planned — Milestone 3
+
+Create a collection definition:
 
 ```json
 {
@@ -30,6 +38,8 @@ CRUD API available at `/api/posts` after Milestone 4.
 
 ## 3. Write a Function
 
+> Planned — Milestone 5
+
 ```ts
 // functions/posts/notify.ts
 export default async ({ db, logger }) => {
@@ -37,13 +47,9 @@ export default async ({ db, logger }) => {
 };
 ```
 
-Register trigger:
-
-```ts
-onCreate("posts", handler);
-```
-
 ## 4. Write a Job
+
+> Planned — Milestone 6
 
 ```ts
 // jobs/cleanup.ts
@@ -56,14 +62,16 @@ export default async ({ db, logger }) => {
 
 ## 5. Authenticate a Client
 
+> Planned — Milestone 7
+
 ```http
 POST /api/auth/register
 POST /api/auth/login
 ```
 
-Use returned JWT for subsequent API requests.
-
 ## 6. Subscribe to Realtime
+
+> Planned — Milestone 9
 
 Connect via WebSocket and subscribe to `posts.created` events.
 
