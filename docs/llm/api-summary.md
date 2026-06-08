@@ -1,6 +1,6 @@
 # API Summary
 
-> Status: Planned — endpoints will be implemented across Milestones 4, 7, 8, and 9.
+> Status: CRUD implemented (Milestone 4). Auth, storage, and realtime planned for later milestones.
 
 ## REST API (Milestone 4)
 
@@ -13,6 +13,8 @@ GET    /api/{collection}/:id
 PUT    /api/{collection}/:id
 DELETE /api/{collection}/:id
 ```
+
+Full specification: `docs/api/rest-api.md`
 
 ## Authentication (Milestone 7)
 
@@ -43,4 +45,4 @@ Connect to `/api/realtime` and subscribe to channels:
 
 ## Response Format
 
-JSON with consistent error structure. Full specification in `docs/api/` when implemented.
+JSON with consistent error structure. See `docs/api/rest-api.md` for details.

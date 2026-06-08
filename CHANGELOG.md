@@ -6,6 +6,12 @@ All notable changes to Bakend are documented in this file.
 
 ### Added
 
+- Milestone 4 CRUD API: auto-generated REST endpoints for all collections (`GET/POST /api/{collection}`, `GET/PUT/DELETE /api/{collection}/:id`).
+- `RecordStore` API: `create`, `get`, `list`, `update`, `delete` with validation and SQLite persistence.
+- Record serialization layer: camelCase API fields, snake_case SQLite columns, type coercion for boolean/json.
+- Emits `{collection}.created`, `{collection}.updated`, `{collection}.deleted` on record CRUD.
+- Records wired into `start()` via `StartResult.recordStore`.
+- API documentation: `docs/api/rest-api.md`.
 - Milestone 3 Collections Engine: dynamic collection definitions, SQLite schema generation, metadata persistence (`_collections`), record validation, and `collections/*.json` loading at startup.
 - `CollectionsEngine` API: `create`, `get`, `list`, `exists`, `validateRecord`.
 - Collections wired into `start()` via `StartResult.collections`.

@@ -13,9 +13,10 @@ Admin UI (SvelteKit)
         │
         ▼
 Bakend Core (src/core/)
-  ├── server/       REST + WebSocket
+  ├── server/       HTTP server
+  ├── api/          REST CRUD routing (Milestone 4 — implemented)
   ├── database/     SQLite
-  ├── collections/  Dynamic schemas + validation (Milestone 3 — implemented)
+  ├── collections/  Dynamic schemas, validation, records (Milestones 3–4 — implemented)
   ├── events/       Event Bus (Milestone 2 — implemented)
   ├── functions/    TypeScript triggers
   ├── jobs/         Cron scheduler

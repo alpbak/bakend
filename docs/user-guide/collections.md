@@ -93,13 +93,29 @@ Field names are stored as snake_case columns in SQLite (e.g. `authorId` → `aut
 
 Creating a collection emits `system.collection.created` on the Event Bus.
 
-Record-level events (`posts.created`, etc.) are available after Milestone 4 (CRUD API).
+Record CRUD emits `{collection}.created`, `{collection}.updated`, and `{collection}.deleted`.
+
+## REST API
+
+Every collection exposes CRUD endpoints automatically:
+
+```bash
+curl -X POST http://localhost:8080/api/posts \
+  -H 'Content-Type: application/json' \
+  -d '{"title":"Hello"}'
+
+curl http://localhost:8080/api/posts
+```
+
+See [REST API](../api/rest-api.md) for the full specification.
+
+Programmatic access is also available via `StartResult.recordStore` after `bak start`.
 
 ## What Is Not Available Yet
 
 | Feature | Milestone |
 |---------|-----------|
-| REST CRUD (`GET/POST /api/posts`) | 4 |
+| Filtering, sorting, pagination | Post-M4 |
 | Schema changes / migrations | RFC-0012 |
 | Collection permissions | 7 |
 | File upload for `file` fields | 8 |

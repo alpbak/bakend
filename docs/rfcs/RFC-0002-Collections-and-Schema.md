@@ -136,6 +136,28 @@ On creation, Bakend emits `system.collection.created` with `source: "collections
 
 Altering or deleting collections is deferred to RFC-0012 (Migration Engine). Milestone 3 supports creation only.
 
+### API Generation
+
+Every registered collection automatically exposes REST CRUD endpoints:
+
+```http
+GET    /api/{collection}
+POST   /api/{collection}
+GET    /api/{collection}/:id
+PUT    /api/{collection}/:id
+DELETE /api/{collection}/:id
+```
+
+Implementation:
+
+- **RecordStore** (`createRecordStore`) — SQLite CRUD with validation and serialization
+- **API router** (`handleApiRequest`) — dynamic route matching and HTTP handlers
+- **Events** — `{collection}.created|updated|deleted` emitted on successful operations (`source: "collections"`)
+- **List response** — `{ items: [...] }`, ordered by `created_at DESC`
+- **Update semantics** — PUT is partial; only fields in the request body are changed
+
+Full API specification: `docs/api/rest-api.md`
+
 ## Future
 - computed fields
 - soft deletes

@@ -1,8 +1,8 @@
-# Collections Engine (Milestone 3)
+# Collections Engine (Milestone 3–4)
 
 ## Overview
 
-Dynamic SQLite collections defined in JSON. Persists metadata, generates tables, validates records.
+Dynamic SQLite collections defined in JSON. Persists metadata, generates tables, validates records, and exposes REST CRUD.
 
 ## Definition Shape
 
@@ -50,6 +50,34 @@ Factory: `createCollectionsEngine({ db, logger, eventBus })`
 
 Wired in `start()` as `StartResult.collections`.
 
+## RecordStore API (Milestone 4)
+
+```ts
+interface RecordStore {
+  create(collection: string, data: Record<string, unknown>): Record<string, unknown>;
+  get(collection: string, id: string): Record<string, unknown> | null;
+  list(collection: string): Record<string, unknown>[];
+  update(collection: string, id: string, data: Record<string, unknown>): Record<string, unknown>;
+  delete(collection: string, id: string): boolean;
+}
+```
+
+Factory: `createRecordStore({ db, collections, logger, eventBus })`
+
+Wired in `start()` as `StartResult.recordStore`.
+
+## REST API
+
+```http
+GET    /api/{collection}
+POST   /api/{collection}
+GET    /api/{collection}/:id
+PUT    /api/{collection}/:id
+DELETE /api/{collection}/:id
+```
+
+See `docs/api/rest-api.md`.
+
 ## File Loading
 
 `collections/*.json` next to `bakend.json`, loaded alphabetically at startup via `loadCollectionDefinitions()`.
@@ -57,7 +85,7 @@ Wired in `start()` as `StartResult.collections`.
 ## Events
 
 - `system.collection.created` — emitted on collection creation (`source: "collections"`)
-- `{collection}.created|updated|deleted` — Milestone 4 (record CRUD)
+- `{collection}.created|updated|deleted` — emitted on record CRUD (`source: "collections"`)
 
 ## Module Layout
 
@@ -68,13 +96,22 @@ src/core/collections/
 ├── validate-definition.ts
 ├── generate-schema.ts
 ├── validate-record.ts
+├── record-id.ts
+├── serialize-record.ts
+├── record-store.ts
 ├── load-definitions.ts
 └── create-collections-engine.ts
+
+src/core/api/
+├── types.ts
+├── responses.ts
+├── router.ts
+└── handlers/records.ts
 ```
 
-## Out of Scope (M3)
+## Out of Scope
 
-- REST CRUD endpoints
 - Schema migration / alter / delete
 - Auth permissions on collections
 - File storage for `file` fields
+- Filtering, sorting, pagination

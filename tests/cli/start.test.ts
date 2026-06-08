@@ -98,4 +98,45 @@ describe("start", () => {
 
     expect(result.collections.list().map((collection) => collection.name)).toEqual(["posts"]);
   });
+
+  test("serves CRUD API for loaded collections", async () => {
+    tempDir = mkdtempSync(join(tmpdir(), "bakend-start-"));
+    const configPath = join(tempDir, "bakend.json");
+    const collectionsDir = join(tempDir, "collections");
+    mkdirSync(collectionsDir, { recursive: true });
+
+    writeFileSync(
+      configPath,
+      JSON.stringify({
+        port: 19082,
+        database: join(tempDir, "bakend.db"),
+        storage: join(tempDir, "storage"),
+        logLevel: "ERROR",
+      }),
+    );
+
+    writeFileSync(
+      join(collectionsDir, "posts.json"),
+      JSON.stringify({
+        name: "posts",
+        fields: [{ name: "title", type: "string", required: true }],
+      }),
+    );
+
+    result = await start({ configPath });
+
+    const createResponse = await fetch(`http://127.0.0.1:${result.server.port}/api/posts`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: "Hello" }),
+    });
+
+    expect(createResponse.status).toBe(201);
+
+    const listResponse = await fetch(`http://127.0.0.1:${result.server.port}/api/posts`);
+    expect(listResponse.status).toBe(200);
+
+    const listBody = (await listResponse.json()) as { items: unknown[] };
+    expect(listBody.items).toHaveLength(1);
+  });
 });

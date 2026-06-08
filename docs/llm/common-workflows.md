@@ -36,9 +36,34 @@ Restart the server — the collection is loaded automatically.
 
 Or create programmatically via `StartResult.collections.create(definition)`.
 
-CRUD API available at `/api/posts` after Milestone 4.
+## 3. Use the REST API
 
-## 3. Write a Function
+With a `posts` collection defined, CRUD is available immediately:
+
+```bash
+# Create a record
+curl -X POST http://localhost:8080/api/posts \
+  -H 'Content-Type: application/json' \
+  -d '{"title":"Hello","content":"World"}'
+
+# List records
+curl http://localhost:8080/api/posts
+
+# Read one record
+curl http://localhost:8080/api/posts/rec_<id>
+
+# Update (partial)
+curl -X PUT http://localhost:8080/api/posts/rec_<id> \
+  -H 'Content-Type: application/json' \
+  -d '{"title":"Updated"}'
+
+# Delete
+curl -X DELETE http://localhost:8080/api/posts/rec_<id>
+```
+
+See `docs/api/rest-api.md` for full API details.
+
+## 4. Write a Function
 
 > Planned — Milestone 5
 
@@ -49,7 +74,7 @@ export default async ({ db, logger }) => {
 };
 ```
 
-## 4. Write a Job
+## 5. Write a Job
 
 > Planned — Milestone 6
 
@@ -62,7 +87,7 @@ export default async ({ db, logger }) => {
 };
 ```
 
-## 5. Authenticate a Client
+## 6. Authenticate a Client
 
 > Planned — Milestone 7
 
@@ -71,7 +96,7 @@ POST /api/auth/register
 POST /api/auth/login
 ```
 
-## 6. Subscribe to Realtime
+## 7. Subscribe to Realtime
 
 > Planned — Milestone 9
 
