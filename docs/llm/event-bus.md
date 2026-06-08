@@ -42,7 +42,8 @@ eventBus.flush();                     // await pending async handlers (tests)
 
 ## Event Categories (RFC-0000)
 
-- Collection: `{collection}.created|updated|deleted`
+- Collection schema: `system.collection.created` (Milestone 3)
+- Collection records: `{collection}.created|updated|deleted` (Milestone 4)
 - Auth: `auth.login|logout|register|password_reset`
 - Storage: `storage.uploaded|deleted`
 - Function: `function.started|completed|failed`
@@ -52,5 +53,5 @@ eventBus.flush();                     // await pending async handlers (tests)
 
 - Wildcard subscriptions
 - Handler priority tiers (logging → realtime → functions → plugins)
-- Collection/function/job/realtime emitters and listeners
+- Record CRUD/function/job/realtime emitters and listeners
 - Persistent event log

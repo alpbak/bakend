@@ -14,7 +14,14 @@ const BOOTSTRAP_SQL = `
   );
 
   INSERT OR IGNORE INTO _bakend_meta (key, value)
-  VALUES ('schema_version', '0');
+  VALUES ('schema_version', '1');
+
+  CREATE TABLE IF NOT EXISTS _collections (
+    name TEXT PRIMARY KEY,
+    definition TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `;
 
 export function initDatabase(config: BakendConfig, logger: Logger): Database {

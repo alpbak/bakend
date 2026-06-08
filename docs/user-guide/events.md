@@ -67,7 +67,8 @@ Handler failures are logged and isolated. A failing handler does not prevent oth
 
 | Feature | Milestone |
 |---------|-----------|
-| Collection-driven events (`users.created` on CRUD) | 3 / 4 |
+| Collection schema events (`system.collection.created`) | 3 (implemented) |
+| Record CRUD events (`users.created` on CRUD) | 4 |
 | Function triggers (`onCreate("users")`) | 5 |
 | Realtime WebSocket fan-out | 9 |
 | Wildcard subscriptions (`users.*`) | 9 |

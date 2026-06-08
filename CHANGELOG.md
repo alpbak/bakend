@@ -6,6 +6,13 @@ All notable changes to Bakend are documented in this file.
 
 ### Added
 
+- Milestone 3 Collections Engine: dynamic collection definitions, SQLite schema generation, metadata persistence (`_collections`), record validation, and `collections/*.json` loading at startup.
+- `CollectionsEngine` API: `create`, `get`, `list`, `exists`, `validateRecord`.
+- Collections wired into `start()` via `StartResult.collections`.
+- Emits `system.collection.created` on collection creation.
+- User guide: `docs/user-guide/collections.md`.
+- LLM reference: `docs/llm/collections.md`.
+- RFC-0002 Implementation section: metadata table, SQL mapping, reserved names.
 - Milestone 2 Event Bus: in-memory pub/sub with `on()`, `emit()`, `BakendEvent` schema, handler error isolation, and automatic event logging.
 - Event Bus wired into `start()` via `StartResult.eventBus`.
 - User guide: `docs/user-guide/events.md`.
@@ -16,4 +23,5 @@ All notable changes to Bakend are documented in this file.
 
 ### Changed
 
+- Database bootstrap schema version bumped to `1`; adds `_collections` metadata table.
 - Milestone 0 project foundation: repository structure, documentation skeleton, Bun tooling, and CI workflow.

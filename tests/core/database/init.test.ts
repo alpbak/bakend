@@ -27,7 +27,15 @@ describe("initDatabase", () => {
       logger,
     );
 
-    expect(getSchemaVersion(db)).toBe("0");
+    expect(getSchemaVersion(db)).toBe("1");
+
+    const collectionsTable = db
+      .query<{ name: string }, []>(
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name = '_collections'",
+      )
+      .get();
+    expect(collectionsTable?.name).toBe("_collections");
+
     closeDatabase(db);
   });
 
@@ -46,7 +54,7 @@ describe("initDatabase", () => {
       logger,
     );
 
-    expect(getSchemaVersion(db)).toBe("0");
+    expect(getSchemaVersion(db)).toBe("1");
     closeDatabase(db);
   });
 });

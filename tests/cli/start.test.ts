@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { printStartupBanner, start } from "../../src/cli/start.ts";
@@ -59,6 +59,8 @@ describe("start", () => {
     expect(result.eventBus).toBeDefined();
     expect(typeof result.eventBus.emit).toBe("function");
     expect(typeof result.eventBus.on).toBe("function");
+    expect(result.collections).toBeDefined();
+    expect(typeof result.collections.create).toBe("function");
 
     const response = await fetch(`http://127.0.0.1:${result.server.port}/health`);
     expect(response.status).toBe(200);
@@ -66,5 +68,34 @@ describe("start", () => {
     const body = (await response.json()) as { status: string; version: string };
     expect(body.status).toBe("ok");
     expect(body.version).toBe("0.1.0");
+  });
+
+  test("loads collections from collections/*.json at startup", async () => {
+    tempDir = mkdtempSync(join(tmpdir(), "bakend-start-"));
+    const configPath = join(tempDir, "bakend.json");
+    const collectionsDir = join(tempDir, "collections");
+    mkdirSync(collectionsDir, { recursive: true });
+
+    writeFileSync(
+      configPath,
+      JSON.stringify({
+        port: 19081,
+        database: join(tempDir, "bakend.db"),
+        storage: join(tempDir, "storage"),
+        logLevel: "ERROR",
+      }),
+    );
+
+    writeFileSync(
+      join(collectionsDir, "posts.json"),
+      JSON.stringify({
+        name: "posts",
+        fields: [{ name: "title", type: "string", required: true }],
+      }),
+    );
+
+    result = await start({ configPath });
+
+    expect(result.collections.list().map((collection) => collection.name)).toEqual(["posts"]);
   });
 });

@@ -20,9 +20,7 @@ curl http://localhost:8080/health
 
 ## 2. Define a Collection
 
-> Planned — Milestone 3
-
-Create a collection definition:
+Create `collections/posts.json` next to `bakend.json`:
 
 ```json
 {
@@ -33,6 +31,10 @@ Create a collection definition:
   ]
 }
 ```
+
+Restart the server — the collection is loaded automatically.
+
+Or create programmatically via `StartResult.collections.create(definition)`.
 
 CRUD API available at `/api/posts` after Milestone 4.
 

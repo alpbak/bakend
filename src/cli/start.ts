@@ -1,6 +1,11 @@
 import type { Database } from "bun:sqlite";
+import { dirname, join } from "node:path";
 import { loadConfig } from "../core/config/load.ts";
+import { DEFAULT_CONFIG_PATH } from "../core/config/defaults.ts";
 import type { LoadConfigOptions } from "../core/config/types.ts";
+import { createCollectionsEngine } from "../core/collections/create-collections-engine.ts";
+import { loadCollectionDefinitions } from "../core/collections/load-definitions.ts";
+import type { CollectionsEngine } from "../core/collections/types.ts";
 import { closeDatabase, initDatabase } from "../core/database/init.ts";
 import { createEventBus } from "../core/events/create-event-bus.ts";
 import type { EventBus } from "../core/events/types.ts";
@@ -16,6 +21,7 @@ export interface StartResult {
   db: Database;
   server: BakendServer;
   eventBus: EventBus;
+  collections: CollectionsEngine;
   shutdown: () => void;
 }
 
@@ -33,6 +39,12 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
   const logger = createLogger(config.logLevel);
   const eventBus = createEventBus(logger);
   const db = initDatabase(config, logger);
+  const collections = createCollectionsEngine({ db, logger, eventBus });
+
+  const configPath = options.configPath ?? DEFAULT_CONFIG_PATH;
+  const collectionsDir = join(dirname(configPath), "collections");
+  loadCollectionDefinitions(collections, collectionsDir, logger);
+
   const server = createServer(config, logger);
 
   printStartupBanner(server.port);
@@ -63,6 +75,7 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
     db,
     server,
     eventBus,
+    collections,
     shutdown,
   };
 }
