@@ -56,6 +56,10 @@ describe("start", () => {
 
     result = await start({ configPath });
 
+    expect(result.eventBus).toBeDefined();
+    expect(typeof result.eventBus.emit).toBe("function");
+    expect(typeof result.eventBus.on).toBe("function");
+
     const response = await fetch(`http://127.0.0.1:${result.server.port}/health`);
     expect(response.status).toBe(200);
 

@@ -16,7 +16,7 @@ Bakend Core (src/core/)
   ├── server/       REST + WebSocket
   ├── database/     SQLite
   ├── collections/  Dynamic schemas + CRUD
-  ├── events/       Event Bus
+  ├── events/       Event Bus (Milestone 2 — implemented)
   ├── functions/    TypeScript triggers
   ├── jobs/         Cron scheduler
   ├── auth/         JWT + sessions
@@ -28,7 +28,7 @@ Bakend Core (src/core/)
 
 ## Event-Driven Flow
 
-All subsystems communicate through the Event Bus (RFC-0000):
+The Event Bus is implemented (Milestone 2). All subsystems communicate through it (RFC-0000):
 
 ```text
 Collection change → Event Bus → Functions / Realtime / Jobs / Logging

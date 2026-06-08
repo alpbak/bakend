@@ -2,6 +2,8 @@ import type { Database } from "bun:sqlite";
 import { loadConfig } from "../core/config/load.ts";
 import type { LoadConfigOptions } from "../core/config/types.ts";
 import { closeDatabase, initDatabase } from "../core/database/init.ts";
+import { createEventBus } from "../core/events/create-event-bus.ts";
+import type { EventBus } from "../core/events/types.ts";
 import { createLogger } from "../core/logging/logger.ts";
 import { createServer } from "../core/server/create-server.ts";
 import type { BakendServer } from "../core/server/create-server.ts";
@@ -13,6 +15,7 @@ export interface StartResult {
   config: ReturnType<typeof loadConfig>;
   db: Database;
   server: BakendServer;
+  eventBus: EventBus;
   shutdown: () => void;
 }
 
@@ -28,6 +31,7 @@ export function printStartupBanner(port: number): void {
 export async function start(options: StartOptions = {}): Promise<StartResult> {
   const config = loadConfig(options);
   const logger = createLogger(config.logLevel);
+  const eventBus = createEventBus(logger);
   const db = initDatabase(config, logger);
   const server = createServer(config, logger);
 
@@ -58,6 +62,7 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
     config,
     db,
     server,
+    eventBus,
     shutdown,
   };
 }
