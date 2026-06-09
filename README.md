@@ -6,6 +6,8 @@ Bakend = PocketBase + Functions + Jobs
 
 One executable. One database. One admin panel.
 
+Bakend began as a private framework, rewritten for open source. [Why Bakend exists](docs/why-bakend.md).
+
 ## Status
 
 **v0.1 beta** — SQLite, collections, REST API, auth, storage, realtime, functions, jobs, dashboard, SDKs, and single-binary deployment.
@@ -39,12 +41,14 @@ Open [http://localhost:8080/health](http://localhost:8080/health) and the [admin
 
 ## Learn
 
-| Resource | Link |
-|----------|------|
-| Documentation | [docs/README.md](docs/README.md) · [hosted docs](https://alpbak.github.io/bakend/docs/) |
-| Tutorials | [tutorials/](tutorials/) · [hosted tutorials](https://alpbak.github.io/bakend/tutorials/) |
-| Examples | [examples/](examples/) |
-| Website | [alpbak.github.io/bakend](https://alpbak.github.io/bakend/) |
+
+| Resource      | Link                                                                                      |
+| ------------- | ----------------------------------------------------------------------------------------- |
+| Documentation | [docs/README.md](docs/README.md) · [hosted docs](https://alpbak.github.io/bakend/docs/)   |
+| Tutorials     | [tutorials/](tutorials/) · [hosted tutorials](https://alpbak.github.io/bakend/tutorials/) |
+| Examples      | [examples/](examples/)                                                                    |
+| Website       | [alpbak.github.io/bakend](https://alpbak.github.io/bakend/)                               |
+
 
 ## Repository
 
