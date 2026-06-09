@@ -4,9 +4,16 @@ Subscribe to live collection events over WebSocket.
 
 ## Setup
 
+From this directory:
+
 ```bash
-cd examples/realtime-demo
-bak start
+bun run ../../src/index.ts start
+```
+
+From the repo root:
+
+```bash
+bun run start -- --config examples/realtime-demo/bakend.json
 ```
 
 ## Browser Client
