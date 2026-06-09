@@ -85,8 +85,6 @@ Creating a post via `POST /api/posts` triggers the function after the record is 
 
 ## 5. Write a Job
 
-> Planned — Milestone 6
-
 ```ts
 // jobs/cleanup.ts
 export const schedule = "0 3 * * *";
@@ -95,6 +93,8 @@ export default async ({ db, logger }) => {
   logger.info("Running cleanup");
 };
 ```
+
+Jobs load at startup. Use `bak dev` or `bak start --watch` to reload job files without restarting.
 
 ## 6. Authenticate a Client
 

@@ -61,6 +61,8 @@ describe("start", () => {
     expect(typeof result.eventBus.on).toBe("function");
     expect(result.collections).toBeDefined();
     expect(typeof result.collections.create).toBe("function");
+    expect(result.jobs).toBeDefined();
+    expect(typeof result.jobs.load).toBe("function");
 
     const response = await fetch(`http://127.0.0.1:${result.server.port}/health`);
     expect(response.status).toBe(200);
@@ -194,5 +196,36 @@ onCreate("posts", async ({ record }) => {
 
     const marker = await Bun.file(markerPath).text();
     expect(marker).toBe("FromFunction");
+  });
+
+  test("loads jobs from jobs/*.ts at startup", async () => {
+    tempDir = mkdtempSync(join(tmpdir(), "bakend-start-"));
+    const configPath = join(tempDir, "bakend.json");
+    const jobsDir = join(tempDir, "jobs");
+    mkdirSync(jobsDir, { recursive: true });
+
+    writeFileSync(
+      configPath,
+      JSON.stringify({
+        port: 19084,
+        database: join(tempDir, "bakend.db"),
+        storage: join(tempDir, "storage"),
+        logLevel: "ERROR",
+      }),
+    );
+
+    writeFileSync(
+      join(jobsDir, "heartbeat.ts"),
+      `export const schedule = "0 3 * * *";
+
+export default async () => {};
+`,
+    );
+
+    result = await start({ configPath });
+
+    expect(result.jobs.list()).toHaveLength(1);
+    expect(result.jobs.list()[0]?.name).toBe("heartbeat");
+    expect(result.jobs.list()[0]?.schedule).toBe("0 3 * * *");
   });
 });

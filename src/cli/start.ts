@@ -14,6 +14,8 @@ import type { EventBus } from "../core/events/types.ts";
 import { createLogger } from "../core/logging/logger.ts";
 import { createFunctionsEngine } from "../core/functions/create-functions-engine.ts";
 import type { FunctionsEngine } from "../core/functions/types.ts";
+import { createJobsEngine } from "../core/jobs/create-jobs-engine.ts";
+import type { JobsEngine } from "../core/jobs/types.ts";
 import { createServer } from "../core/server/create-server.ts";
 import type { BakendServer } from "../core/server/create-server.ts";
 import { VERSION_DISPLAY } from "../version.ts";
@@ -30,6 +32,7 @@ export interface StartResult {
   collections: CollectionsEngine;
   recordStore: RecordStore;
   functions: FunctionsEngine;
+  jobs: JobsEngine;
   shutdown: () => void;
 }
 
@@ -54,17 +57,29 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
   const projectDir = dirname(configPath);
   const collectionsDir = join(projectDir, "collections");
   const functionsDir = join(projectDir, "functions");
+  const jobsDir = join(projectDir, "jobs");
 
   loadCollectionDefinitions(collections, collectionsDir, logger);
+
+  const watch = options.watch ?? false;
 
   const functions = createFunctionsEngine({
     eventBus,
     db,
     logger,
     functionsDir,
-    watch: options.watch ?? false,
+    watch,
   });
   await functions.load();
+
+  const jobs = createJobsEngine({
+    eventBus,
+    db,
+    logger,
+    jobsDir,
+    watch,
+  });
+  await jobs.load();
 
   const server = createServer(config, logger, { collections, recordStore });
 
@@ -79,6 +94,7 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
 
     shuttingDown = true;
     logger.info("Shutting down");
+    jobs.shutdown();
     functions.shutdown();
     server.stop();
     closeDatabase(db);
@@ -100,6 +116,7 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
     collections,
     recordStore,
     functions,
+    jobs,
     shutdown,
   };
 }

@@ -6,6 +6,12 @@ All notable changes to Bakend are documented in this file.
 
 ### Added
 
+- Milestone 6 Jobs Engine: cron-based job discovery, in-process scheduler, execution with retry, lifecycle events, in-memory run history, and hot reload.
+- Jobs wired into `start()` via `StartResult.jobs`.
+- User guide: `docs/user-guide/jobs.md`.
+- LLM reference: `docs/llm/jobs.md`.
+- RFC-0004 Implementation section.
+- Example: `examples/jobs-demo/`.
 - Milestone 5 Functions Engine: TypeScript function discovery, trigger registration (`onCreate`, `onUpdate`, `onDelete`, `onLogin`, `onRegister`), Event Bus execution, lifecycle events, and hot reload.
 - `bakend/functions` package export for trigger helpers.
 - `bak dev` command and `bak start --watch` for function hot reload.

@@ -7,7 +7,7 @@ function printUsage(): void {
 
 Usage:
   bak start [--config <path>] [--watch]   Start the Bakend server
-  bak dev [--config <path>]               Start with function hot reload
+  bak dev [--config <path>]               Start with function and job hot reload
   bak --help                              Show this help message
 `);
 }
