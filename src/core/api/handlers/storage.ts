@@ -30,7 +30,7 @@ function handleStorageError(error: unknown): Response {
   throw error;
 }
 
-function parseVisibility(value: FormDataEntryValue | null): "public" | "protected" {
+function parseVisibility(value: unknown): "public" | "protected" {
   if (typeof value === "string" && value === "public") {
     return "public";
   }
@@ -49,7 +49,7 @@ export async function handleStorageUpload(
     return unauthorizedResponse();
   }
 
-  let formData: FormData;
+  let formData;
   try {
     formData = await request.formData();
   } catch {

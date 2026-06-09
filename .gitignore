@@ -13,7 +13,7 @@ out/
 *.db-journal
 *.db-wal
 *.db-shm
-storage/
+/storage/
 
 # Environment
 .env
