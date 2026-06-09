@@ -1,0 +1,6 @@
+{
+  "port": 8080,
+  "database": "data.db",
+  "collectionsDir": "collections",
+  "logLevel": "INFO"
+}

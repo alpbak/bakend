@@ -15,7 +15,7 @@ RFC numbers are permanent and must never be reused.
 | [RFC-0006](RFC-0006-Realtime-Engine.md) | Realtime Engine | Stub |
 | [RFC-0007](RFC-0007-Storage-System.md) | Storage System | Stub |
 | [RFC-0008](RFC-0008-CLI-and-Project-Structure.md) | CLI and Project Structure | Stub |
-| [RFC-0009](RFC-0009-SDK-Design.md) | SDK Design | Stub |
+| [RFC-0009](RFC-0009-SDK-Design.md) | SDK Design | Draft |
 | [RFC-0010](RFC-0010-Packaging-and-Deployment.md) | Packaging and Deployment | Stub |
 | [RFC-0011](RFC-0011-Admin-Dashboard.md) | Admin Dashboard | Draft |
 

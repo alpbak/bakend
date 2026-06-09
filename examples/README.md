@@ -9,5 +9,6 @@ Sample Bakend projects and tutorials.
 | `auth-demo/` | Registration, login, and collection permissions |
 | `storage-demo/` | File upload, download, and `file` collection fields |
 | `realtime-demo/` | WebSocket subscriptions for live collection events |
+| `sdk-demo/` | `@bakend/client` SDK — auth, CRUD, storage, realtime |
 
 **Milestone:** 13 — Beta Release

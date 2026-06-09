@@ -1,6 +1,6 @@
 # API Summary
 
-> Status: CRUD (Milestone 4), Authentication (Milestone 7), Storage (Milestone 8), Realtime (Milestone 9), and Admin API (Milestone 10) implemented.
+> Status: CRUD (Milestone 4), Authentication (Milestone 7), Storage (Milestone 8), Realtime (Milestone 9), Admin API (Milestone 10), and SDKs (Milestone 11) implemented.
 
 ## REST API (Milestone 4)
 
@@ -77,6 +77,20 @@ GET  /api/admin/logs
 ```
 
 Full specification: `docs/api/admin-api.md`
+
+## SDKs (Milestone 11 — implemented)
+
+| Package | Path |
+|---------|------|
+| `@bakend/client` (JS/TS) | `sdk/javascript/` |
+| `bakend` (Dart) | `sdk/dart/` |
+
+```ts
+import { BakendClient } from "@bakend/client";
+const client = new BakendClient("http://localhost:8080");
+```
+
+Full reference: `docs/llm/sdk.md`, `docs/sdk/javascript.md`, `docs/sdk/dart.md`
 
 ## Response Format
 

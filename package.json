@@ -10,15 +10,24 @@
   "exports": {
     "./functions": "./src/core/functions/triggers.ts"
   },
+  "workspaces": [
+    "sdk/javascript"
+  ],
   "scripts": {
     "start": "bun run src/index.ts start",
     "dev": "bun run src/index.ts dev",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
+    "test:sdk": "bun test tests/sdk",
+    "sdk:check": "cd sdk/javascript && tsc --noEmit",
+    "test:dart": "cd sdk/dart && dart pub get && dart test",
     "lint": "echo 'Lint not configured yet'",
     "dashboard:dev": "cd dashboard && bun run dev",
     "dashboard:build": "cd dashboard && bun run build",
     "dashboard:check": "cd dashboard && bun run check"
+  },
+  "dependencies": {
+    "@bakend/client": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "latest",

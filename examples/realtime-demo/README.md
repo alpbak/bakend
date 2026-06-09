@@ -49,3 +49,7 @@ ws://localhost:8080/api/realtime?token=<access_token>
 ```
 
 Obtain a token via `POST /api/auth/login`. See `examples/auth-demo/` for auth setup.
+
+## SDK Alternative
+
+The same flow using `@bakend/client` is demonstrated in `examples/sdk-demo/`. See `docs/sdk/javascript.md`.

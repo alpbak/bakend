@@ -6,6 +6,12 @@ All notable changes to Bakend are documented in this file.
 
 ### Added
 
+- Milestone 11 SDKs: JavaScript/TypeScript client (`@bakend/client`) and Dart client (`bakend`) for auth, CRUD, storage, and realtime.
+- SDK packages: `sdk/javascript/`, `sdk/dart/`.
+- SDK integration tests: `tests/sdk/javascript/`, `sdk/dart/test/`.
+- Documentation: `docs/sdk/javascript.md`, `docs/sdk/dart.md`, `docs/llm/sdk.md`.
+- RFC-0009 SDK Design (full specification).
+- Example: `examples/sdk-demo/`.
 - Milestone 10 Dashboard: SvelteKit admin UI at `/_/`, admin HTTP API, collection schema migration, in-memory log buffer, static asset serving.
 - Admin endpoints: `/api/admin/collections`, `/users`, `/storage`, `/functions`, `/jobs`, `/logs`; `GET /api/auth/me`.
 - `CollectionsEngine.update()` and `CollectionsEngine.delete()` with inline SQLite migrations.
