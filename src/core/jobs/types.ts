@@ -31,6 +31,7 @@ export interface JobsEngine {
   reload(): Promise<void>;
   list(): RegisteredJob[];
   getRuns(name: string): JobRunLog[];
+  runDueJobs(): Promise<void>;
   shutdown(): void;
 }
 

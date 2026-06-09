@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, jest, test } from "bun:test";
+import { afterEach, describe, expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -13,14 +13,7 @@ describe.serial("createJobsEngine", () => {
   let tempDir = "";
   let db: ReturnType<typeof initDatabase> | undefined;
 
-  beforeEach(() => {
-    jest.useFakeTimers();
-    tempDir = mkdtempSync(join(tmpdir(), "bakend-jobs-engine-"));
-  });
-
   afterEach(() => {
-    jest.useRealTimers();
-
     if (db) {
       closeDatabase(db);
       db = undefined;
@@ -32,17 +25,8 @@ describe.serial("createJobsEngine", () => {
     }
   });
 
-  async function advanceAndFlush(ms: number, eventBus: ReturnType<typeof createEventBus>): Promise<void> {
-    jest.advanceTimersByTime(ms);
-
-    for (let index = 0; index < 20; index += 1) {
-      await Promise.resolve();
-    }
-
-    await eventBus.flush();
-  }
-
   function createJobsDir(handlerBody: string, schedule = "* * * * *"): string {
+    tempDir = mkdtempSync(join(tmpdir(), "bakend-jobs-engine-"));
     const jobsDir = join(tempDir, "jobs");
     mkdirSync(jobsDir, { recursive: true });
 
@@ -110,10 +94,12 @@ export default async ({ logger }) => {
       db,
       logger,
       jobsDir,
+      dueImmediately: true,
     });
 
     await engine.load();
-    await advanceAndFlush(65_000, eventBus);
+    await engine.runDueJobs();
+    await eventBus.flush();
 
     const marker = await Bun.file(markerPath).text();
     expect(marker).toBe("ran");
@@ -149,13 +135,13 @@ export default async ({ logger }) => {
       db,
       logger,
       jobsDir,
+      dueImmediately: true,
+      retryDelayMs: 1,
     });
 
     await engine.load();
-    await advanceAndFlush(65_000, eventBus);
-    await advanceAndFlush(5_000, eventBus);
-    await advanceAndFlush(5_000, eventBus);
-    await advanceAndFlush(5_000, eventBus);
+    await engine.runDueJobs();
+    await eventBus.flush();
 
     expect(failedEvent).toBeDefined();
     expect((failedEvent!.payload as { error?: string }).error).toBe("boom");
@@ -186,6 +172,7 @@ export default async ({ logger }) => {
       db,
       logger,
       jobsDir,
+      dueImmediately: true,
     });
 
     await engine.load();
@@ -201,7 +188,7 @@ export default async () => {
     );
 
     await engine.reload();
-    await advanceAndFlush(65_000, eventBus);
+    await engine.runDueJobs();
 
     const marker = await Bun.file(markerPath).text();
     expect(marker).toBe("second");

@@ -17,6 +17,10 @@ export interface CreateJobsEngineOptions {
   logger: Logger;
   jobsDir: string;
   watch?: boolean;
+  /** Schedule discovered jobs as due immediately (for tests). */
+  dueImmediately?: boolean;
+  /** Override retry delay between attempts (for tests). */
+  retryDelayMs?: number;
 }
 
 interface ScheduledJob {
@@ -40,7 +44,15 @@ function sleep(ms: number): Promise<void> {
 }
 
 export function createJobsEngine(options: CreateJobsEngineOptions): JobsEngine {
-  const { eventBus, db, logger, jobsDir, watch = false } = options;
+  const {
+    eventBus,
+    db,
+    logger,
+    jobsDir,
+    watch = false,
+    dueImmediately = false,
+    retryDelayMs = RETRY_DELAY_MS,
+  } = options;
 
   const scheduledJobs = new Map<string, ScheduledJob>();
   const runHistory = new Map<string, JobRunLog[]>();
@@ -115,7 +127,7 @@ export function createJobsEngine(options: CreateJobsEngineOptions): JobsEngine {
           logger.error(
             `Job failed (${job.filePath}), retrying (${attempt}/${MAX_ATTEMPTS}): ${message}`,
           );
-          await sleep(RETRY_DELAY_MS);
+          await sleep(retryDelayMs);
           continue;
         }
 
@@ -156,12 +168,8 @@ export function createJobsEngine(options: CreateJobsEngineOptions): JobsEngine {
     }
   }
 
-  function processDueJobs(): void {
-    if (shuttingDown) {
-      return;
-    }
-
-    const now = new Date();
+  function collectDueJobExecutions(now = new Date()): Promise<void>[] {
+    const executions: Promise<void>[] = [];
 
     for (const scheduled of scheduledJobs.values()) {
       if (scheduled.running) {
@@ -169,13 +177,29 @@ export function createJobsEngine(options: CreateJobsEngineOptions): JobsEngine {
       }
 
       if (scheduled.nextRun.getTime() <= now.getTime()) {
-        const result = executeDueJob(scheduled);
-        if (isPromise(result)) {
-          result.catch((error: unknown) => {
+        executions.push(
+          executeDueJob(scheduled).catch((error: unknown) => {
             const message = error instanceof Error ? error.message : String(error);
             logger.error(`Job execution error (${scheduled.job.filePath}): ${message}`);
-          });
-        }
+          }),
+        );
+      }
+    }
+
+    return executions;
+  }
+
+  function processDueJobs(): void {
+    if (shuttingDown) {
+      return;
+    }
+
+    for (const execution of collectDueJobExecutions()) {
+      if (isPromise(execution)) {
+        execution.catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : String(error);
+          logger.error(`Job execution error: ${message}`);
+        });
       }
     }
   }
@@ -241,7 +265,7 @@ export function createJobsEngine(options: CreateJobsEngineOptions): JobsEngine {
     for (const job of discovered) {
       scheduledJobs.set(job.name, {
         job,
-        nextRun: getNextRun(job.schedule, now),
+        nextRun: dueImmediately ? new Date(now.getTime() - 1) : getNextRun(job.schedule, now),
         running: false,
       });
 
@@ -277,6 +301,10 @@ export function createJobsEngine(options: CreateJobsEngineOptions): JobsEngine {
 
     getRuns(name: string) {
       return [...(runHistory.get(name) ?? [])];
+    },
+
+    async runDueJobs() {
+      await Promise.all(collectDueJobExecutions());
     },
 
     shutdown() {
