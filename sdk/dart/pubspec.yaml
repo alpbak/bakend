@@ -15,7 +15,6 @@ topics:
   - flutter
   - realtime
   - authentication
-  - rest-api
 
 environment:
   sdk: ^3.5.0
