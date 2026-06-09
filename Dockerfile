@@ -9,6 +9,7 @@ COPY dashboard/package.json dashboard/bun.lock* ./dashboard/
 COPY sdk/javascript/package.json ./sdk/javascript/
 
 RUN bun install
+RUN cd dashboard && bun install
 
 COPY . .
 
