@@ -8,6 +8,8 @@ import type { BakendEvent } from "../../../src/core/events/types.ts";
 import { createJobsEngine } from "../../../src/core/jobs/create-jobs-engine.ts";
 import { createLogger } from "../../../src/core/logging/logger.ts";
 import { DEFAULT_CONFIG } from "../../../src/core/config/defaults.ts";
+import { createTestStorage } from "../../helpers/test-storage.ts";
+import type { StorageEngine } from "../../../src/core/storage/types.ts";
 
 describe.serial("createJobsEngine", () => {
   let tempDir = "";
@@ -43,18 +45,24 @@ export default async ({ logger }) => {
     return jobsDir;
   }
 
+  function setupDb(logger: ReturnType<typeof createLogger>, eventBus: ReturnType<typeof createEventBus>): StorageEngine {
+    db = initDatabase({ ...DEFAULT_CONFIG, database: join(tempDir, "bakend.db") }, logger);
+    return createTestStorage(db, logger, eventBus, join(tempDir, "storage")).storage;
+  }
+
   test("loads jobs and lists them", async () => {
     const jobsDir = createJobsDir("logger.info('tick');");
 
     const logger = createLogger("ERROR");
     const eventBus = createEventBus(logger);
-    db = initDatabase({ ...DEFAULT_CONFIG, database: join(tempDir, "bakend.db") }, logger);
+    const storage = setupDb(logger, eventBus);
 
     const engine = createJobsEngine({
       eventBus,
-      db,
+      db: db!,
       logger,
       jobsDir,
+      storage,
     });
 
     await engine.load();
@@ -76,7 +84,7 @@ export default async ({ logger }) => {
 
     const logger = createLogger("ERROR");
     const eventBus = createEventBus(logger);
-    db = initDatabase({ ...DEFAULT_CONFIG, database: join(tempDir, "bakend.db") }, logger);
+    const storage = setupDb(logger, eventBus);
 
     const lifecycle: string[] = [];
     eventBus.on("job.started", () => {
@@ -91,9 +99,10 @@ export default async ({ logger }) => {
 
     const engine = createJobsEngine({
       eventBus,
-      db,
+      db: db!,
       logger,
       jobsDir,
+      storage,
       dueImmediately: true,
     });
 
@@ -118,7 +127,7 @@ export default async ({ logger }) => {
 
     const logger = createLogger("ERROR");
     const eventBus = createEventBus(logger);
-    db = initDatabase({ ...DEFAULT_CONFIG, database: join(tempDir, "bakend.db") }, logger);
+    const storage = setupDb(logger, eventBus);
 
     let failedEvent: BakendEvent | undefined;
     let completed = false;
@@ -132,9 +141,10 @@ export default async ({ logger }) => {
 
     const engine = createJobsEngine({
       eventBus,
-      db,
+      db: db!,
       logger,
       jobsDir,
+      storage,
       dueImmediately: true,
       retryDelayMs: 1,
     });
@@ -165,13 +175,14 @@ export default async ({ logger }) => {
 
     const logger = createLogger("ERROR");
     const eventBus = createEventBus(logger);
-    db = initDatabase({ ...DEFAULT_CONFIG, database: join(tempDir, "bakend.db") }, logger);
+    const storage = setupDb(logger, eventBus);
 
     const engine = createJobsEngine({
       eventBus,
-      db,
+      db: db!,
       logger,
       jobsDir,
+      storage,
       dueImmediately: true,
     });
 

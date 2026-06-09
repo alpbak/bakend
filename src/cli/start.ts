@@ -16,6 +16,8 @@ import { createFunctionsEngine } from "../core/functions/create-functions-engine
 import type { FunctionsEngine } from "../core/functions/types.ts";
 import { createAuthEngine } from "../core/auth/create-auth-engine.ts";
 import type { AuthEngine } from "../core/auth/types.ts";
+import { createStorageEngine } from "../core/storage/create-storage-engine.ts";
+import type { StorageEngine } from "../core/storage/types.ts";
 import { getAdminEmailFromEnv } from "../core/config/load.ts";
 import { createJobsEngine } from "../core/jobs/create-jobs-engine.ts";
 import type { JobsEngine } from "../core/jobs/types.ts";
@@ -35,6 +37,7 @@ export interface StartResult {
   collections: CollectionsEngine;
   recordStore: RecordStore;
   auth: AuthEngine;
+  storage: StorageEngine;
   functions: FunctionsEngine;
   jobs: JobsEngine;
   shutdown: () => void;
@@ -54,7 +57,8 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
   const logger = createLogger(config.logLevel);
   const eventBus = createEventBus(logger);
   const db = initDatabase(config, logger);
-  const collections = createCollectionsEngine({ db, logger, eventBus });
+  const storage = createStorageEngine({ db, config, logger, eventBus });
+  const collections = createCollectionsEngine({ db, logger, eventBus, storage });
   const recordStore = createRecordStore({ db, collections, logger, eventBus });
 
   const configPath = options.configPath ?? DEFAULT_CONFIG_PATH;
@@ -67,12 +71,21 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
 
   const watch = options.watch ?? false;
 
+  const auth = createAuthEngine({
+    db,
+    logger,
+    eventBus,
+    config,
+    adminEmail: getAdminEmailFromEnv(),
+  });
+
   const functions = createFunctionsEngine({
     eventBus,
     db,
     logger,
     functionsDir,
     watch,
+    storage,
   });
   await functions.load();
 
@@ -82,18 +95,11 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
     logger,
     jobsDir,
     watch,
+    storage,
   });
   await jobs.load();
 
-  const auth = createAuthEngine({
-    db,
-    logger,
-    eventBus,
-    config,
-    adminEmail: getAdminEmailFromEnv(),
-  });
-
-  const server = createServer(config, logger, { collections, recordStore, auth });
+  const server = createServer(config, logger, { collections, recordStore, auth, storage });
 
   printStartupBanner(server.port);
 
@@ -128,6 +134,7 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
     collections,
     recordStore,
     auth,
+    storage,
     functions,
     jobs,
     shutdown,

@@ -1,4 +1,7 @@
 import { Database } from "bun:sqlite";
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { createAuthEngine } from "../../src/core/auth/create-auth-engine.ts";
 import { createCollectionsEngine } from "../../src/core/collections/create-collections-engine.ts";
 import { createRecordStore } from "../../src/core/collections/record-store.ts";
@@ -6,6 +9,7 @@ import { DEFAULT_CONFIG } from "../../src/core/config/defaults.ts";
 import { createEventBus } from "../../src/core/events/create-event-bus.ts";
 import { createLogger } from "../../src/core/logging/logger.ts";
 import { createServer } from "../../src/core/server/create-server.ts";
+import { createTestStorage } from "./test-storage.ts";
 
 export const TEST_BOOTSTRAP_SQL = `
   CREATE TABLE IF NOT EXISTS _bakend_meta (
@@ -35,19 +39,32 @@ export const TEST_BOOTSTRAP_SQL = `
     expires_at TEXT NOT NULL,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS _files (
+    id TEXT PRIMARY KEY,
+    filename TEXT NOT NULL,
+    mime_type TEXT NOT NULL,
+    size INTEGER NOT NULL,
+    visibility TEXT NOT NULL CHECK (visibility IN ('public', 'protected')),
+    user_id TEXT NOT NULL REFERENCES _users(id) ON DELETE CASCADE,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `;
 
 export function createTestServer() {
+  const storageRoot = mkdtempSync(join(tmpdir(), "bakend-test-storage-"));
   const db = new Database(":memory:");
   db.run(TEST_BOOTSTRAP_SQL);
   const logger = createLogger("ERROR");
   const eventBus = createEventBus(logger);
-  const collections = createCollectionsEngine({ db, logger, eventBus });
+  const { storage } = createTestStorage(db, logger, eventBus, storageRoot);
+  const collections = createCollectionsEngine({ db, logger, eventBus, storage });
   const recordStore = createRecordStore({ db, collections, logger, eventBus });
   const config = {
     ...DEFAULT_CONFIG,
     port: 0,
     database: ":memory:",
+    storage: storageRoot,
     logLevel: "ERROR" as const,
     auth: {
       jwtSecret: "test-secret-key-for-jwt-signing",
@@ -63,7 +80,7 @@ export function createTestServer() {
     config,
   });
 
-  const server = createServer(config, logger, { collections, recordStore, auth });
+  const server = createServer(config, logger, { collections, recordStore, auth, storage });
 
-  return { db, server, eventBus, collections, recordStore, auth, config };
+  return { db, server, eventBus, collections, recordStore, auth, storage, config, storageRoot };
 }

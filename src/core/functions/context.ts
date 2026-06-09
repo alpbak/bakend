@@ -2,6 +2,7 @@ import type { Database } from "bun:sqlite";
 import type { AuthUser } from "../auth/types.ts";
 import type { BakendEvent } from "../events/types.ts";
 import type { Logger } from "../logging/logger.ts";
+import type { StorageContext } from "../storage/types.ts";
 import type { FunctionContext } from "./types.ts";
 
 function payloadToRecord(payload: unknown): Record<string, unknown> {
@@ -47,6 +48,7 @@ export function createFunctionContext(
   event: BakendEvent,
   db: Database,
   logger: Logger,
+  storage: StorageContext,
 ): FunctionContext {
   return {
     event,
@@ -54,5 +56,6 @@ export function createFunctionContext(
     db,
     logger,
     auth: { user: authUserFromPayload(event) },
+    storage,
   };
 }

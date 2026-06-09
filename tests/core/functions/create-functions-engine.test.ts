@@ -9,6 +9,8 @@ import type { BakendEvent } from "../../../src/core/events/types.ts";
 import { createFunctionsEngine } from "../../../src/core/functions/create-functions-engine.ts";
 import { createLogger } from "../../../src/core/logging/logger.ts";
 import { DEFAULT_CONFIG } from "../../../src/core/config/defaults.ts";
+import { createTestStorage } from "../../helpers/test-storage.ts";
+import type { StorageEngine } from "../../../src/core/storage/types.ts";
 
 describe.serial("createFunctionsEngine", () => {
   let tempDir = "";
@@ -48,19 +50,25 @@ onCreate("posts", async ({ record }) => {
     return functionsDir;
   }
 
+  function setupDb(logger: ReturnType<typeof createLogger>, eventBus: ReturnType<typeof createEventBus>): StorageEngine {
+    db = initDatabase({ ...DEFAULT_CONFIG, database: join(tempDir, "bakend.db") }, logger);
+    return createTestStorage(db, logger, eventBus, join(tempDir, "storage")).storage;
+  }
+
   test("executes handler when matching event is emitted", async () => {
     const functionsDir = createFixture(`await Bun.write(markerPath, record.title as string);`);
     const markerPath = join(tempDir, "marker.txt");
 
     const logger = createLogger("ERROR");
     const eventBus = createEventBus(logger);
-    db = initDatabase({ ...DEFAULT_CONFIG, database: join(tempDir, "bakend.db") }, logger);
+    const storage = setupDb(logger, eventBus);
 
     const engine = createFunctionsEngine({
       eventBus,
-      db,
+      db: db!,
       logger,
       functionsDir,
+      storage,
     });
 
     await engine.load();
@@ -83,7 +91,7 @@ onCreate("posts", async ({ record }) => {
 
     const logger = createLogger("ERROR");
     const eventBus = createEventBus(logger);
-    db = initDatabase({ ...DEFAULT_CONFIG, database: join(tempDir, "bakend.db") }, logger);
+    const storage = setupDb(logger, eventBus);
 
     const lifecycle: string[] = [];
     eventBus.on("function.started", () => {
@@ -98,9 +106,10 @@ onCreate("posts", async ({ record }) => {
 
     const engine = createFunctionsEngine({
       eventBus,
-      db,
+      db: db!,
       logger,
       functionsDir,
+      storage,
     });
 
     await engine.load();
@@ -122,7 +131,7 @@ onCreate("posts", async ({ record }) => {
 
     const logger = createLogger("ERROR");
     const eventBus = createEventBus(logger);
-    db = initDatabase({ ...DEFAULT_CONFIG, database: join(tempDir, "bakend.db") }, logger);
+    const storage = setupDb(logger, eventBus);
 
     let failedEvent: BakendEvent | undefined;
     let completed = false;
@@ -136,9 +145,10 @@ onCreate("posts", async ({ record }) => {
 
     const engine = createFunctionsEngine({
       eventBus,
-      db,
+      db: db!,
       logger,
       functionsDir,
+      storage,
     });
 
     await engine.load();
@@ -165,13 +175,14 @@ onCreate("posts", async ({ record }) => {
 
     const logger = createLogger("ERROR");
     const eventBus = createEventBus(logger);
-    db = initDatabase({ ...DEFAULT_CONFIG, database: join(tempDir, "bakend.db") }, logger);
+    const storage = setupDb(logger, eventBus);
 
     const engine = createFunctionsEngine({
       eventBus,
-      db,
+      db: db!,
       logger,
       functionsDir,
+      storage,
     });
 
     await engine.load();

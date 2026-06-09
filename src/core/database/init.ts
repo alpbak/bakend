@@ -14,7 +14,7 @@ const BOOTSTRAP_SQL = `
   );
 
   INSERT OR IGNORE INTO _bakend_meta (key, value)
-  VALUES ('schema_version', '2');
+  VALUES ('schema_version', '3');
 
   CREATE TABLE IF NOT EXISTS _collections (
     name TEXT PRIMARY KEY,
@@ -36,6 +36,16 @@ const BOOTSTRAP_SQL = `
     user_id TEXT NOT NULL REFERENCES _users(id) ON DELETE CASCADE,
     refresh_token_hash TEXT NOT NULL UNIQUE,
     expires_at TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS _files (
+    id TEXT PRIMARY KEY,
+    filename TEXT NOT NULL,
+    mime_type TEXT NOT NULL,
+    size INTEGER NOT NULL,
+    visibility TEXT NOT NULL CHECK (visibility IN ('public', 'protected')),
+    user_id TEXT NOT NULL REFERENCES _users(id) ON DELETE CASCADE,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 `;
@@ -60,12 +70,32 @@ const MIGRATION_V2_SQL = `
   UPDATE _bakend_meta SET value = '2' WHERE key = 'schema_version';
 `;
 
+const MIGRATION_V3_SQL = `
+  CREATE TABLE IF NOT EXISTS _files (
+    id TEXT PRIMARY KEY,
+    filename TEXT NOT NULL,
+    mime_type TEXT NOT NULL,
+    size INTEGER NOT NULL,
+    visibility TEXT NOT NULL CHECK (visibility IN ('public', 'protected')),
+    user_id TEXT NOT NULL REFERENCES _users(id) ON DELETE CASCADE,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  UPDATE _bakend_meta SET value = '3' WHERE key = 'schema_version';
+`;
+
 function runMigrations(db: Database, logger: Logger): void {
-  const version = getSchemaVersion(db);
+  let version = getSchemaVersion(db);
 
   if (version === "1") {
     db.run(MIGRATION_V2_SQL);
     logger.debug("Database migrated from schema version 1 to 2");
+    version = "2";
+  }
+
+  if (version === "2") {
+    db.run(MIGRATION_V3_SQL);
+    logger.debug("Database migrated from schema version 2 to 3");
   }
 }
 

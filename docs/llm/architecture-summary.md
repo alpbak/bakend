@@ -21,7 +21,7 @@ Bakend Core (src/core/)
   ├── functions/    TypeScript triggers (Milestone 5 — implemented)
   ├── jobs/         Cron scheduler
   ├── auth/         JWT + sessions (Milestone 7 — implemented)
-  └── storage/      Filesystem
+  └── storage/      Filesystem uploads (Milestone 8 — implemented)
         │
         ▼
      SQLite

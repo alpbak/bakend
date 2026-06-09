@@ -1,6 +1,6 @@
 # API Summary
 
-> Status: CRUD (Milestone 4) and Authentication (Milestone 7) implemented. Storage and realtime planned for later milestones.
+> Status: CRUD (Milestone 4), Authentication (Milestone 7), and Storage (Milestone 8) implemented. Realtime planned for Milestone 9.
 
 ## REST API (Milestone 4)
 
@@ -25,13 +25,17 @@ POST /api/auth/refresh
 POST /api/auth/logout
 ```
 
-## Storage (Milestone 8)
+## Storage (Milestone 8 — implemented)
 
 ```http
-POST   /api/storage/upload
-GET    /api/storage/:id
-DELETE /api/storage/:id
+POST   /api/storage/upload   # multipart: file, visibility (public|protected)
+GET    /api/storage/:id      # download (ACL enforced)
+DELETE /api/storage/:id      # owner or admin
 ```
+
+Upload response: `{ id, filename, mimeType, size, visibility, userId, createdAt }`
+
+Full specification: `docs/api/storage.md`
 
 ## WebSocket (Milestone 9)
 

@@ -6,6 +6,16 @@ All notable changes to Bakend are documented in this file.
 
 ### Added
 
+- Milestone 8 Storage: local filesystem storage, authenticated uploads, public/protected download ACLs, file metadata in `_files` table (schema version `3`).
+- Storage endpoints: `POST /api/storage/upload`, `GET /api/storage/:id`, `DELETE /api/storage/:id`.
+- Collection `file` field validation against `_files.id`.
+- `storage` in function and job context (`get`, `delete`).
+- Events: `storage.uploaded`, `storage.deleted`.
+- API documentation: `docs/api/storage.md`.
+- User guide: `docs/user-guide/storage.md`.
+- LLM reference: `docs/llm/storage.md`.
+- RFC-0007 Implementation section.
+- Example: `examples/storage-demo/`.
 - Milestone 7 Authentication: email/password registration and login, JWT access tokens, refresh sessions, collection permission enforcement, and auth event emissions.
 - Auth endpoints: `POST /api/auth/register`, `/login`, `/refresh`, `/logout`.
 - System user store (`_users`, `_sessions` tables); schema version `2`.

@@ -1,6 +1,7 @@
 import type { Database } from "bun:sqlite";
 import type { BakendEvent, EventBus, UnsubscribeFn } from "../events/types.ts";
 import type { Logger } from "../logging/logger.ts";
+import type { StorageEngine } from "../storage/types.ts";
 import { createFunctionContext } from "./context.ts";
 import { discoverFunctions } from "./discover.ts";
 import type { FunctionsEngine, RegisteredTrigger } from "./types.ts";
@@ -12,6 +13,7 @@ export interface CreateFunctionsEngineOptions {
   logger: Logger;
   functionsDir: string;
   watch?: boolean;
+  storage: StorageEngine;
 }
 
 function isPromise(value: unknown): value is Promise<unknown> {
@@ -23,7 +25,8 @@ function isPromise(value: unknown): value is Promise<unknown> {
 }
 
 export function createFunctionsEngine(options: CreateFunctionsEngineOptions): FunctionsEngine {
-  const { eventBus, db, logger, functionsDir, watch = false } = options;
+  const { eventBus, db, logger, functionsDir, watch = false, storage } = options;
+  const storageContext = storage.getContext();
 
   let triggers: RegisteredTrigger[] = [];
   const subscriptions: UnsubscribeFn[] = [];
@@ -52,7 +55,7 @@ export function createFunctionsEngine(options: CreateFunctionsEngineOptions): Fu
     emitLifecycle("function.started", trigger, event);
 
     try {
-      const context = createFunctionContext(event, db, logger);
+      const context = createFunctionContext(event, db, logger, storageContext);
       const result = trigger.handler(context);
 
       if (isPromise(result)) {

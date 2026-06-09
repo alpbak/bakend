@@ -7,6 +7,7 @@ import { createEventBus } from "../../../src/core/events/create-event-bus.ts";
 import { createJobsEngine } from "../../../src/core/jobs/create-jobs-engine.ts";
 import { createLogger } from "../../../src/core/logging/logger.ts";
 import { DEFAULT_CONFIG } from "../../../src/core/config/defaults.ts";
+import { createTestStorage } from "../../helpers/test-storage.ts";
 
 describe("job hot reload", () => {
   let tempDir = "";
@@ -40,12 +41,14 @@ export default async () => {};
     const logger = createLogger("ERROR");
     const eventBus = createEventBus(logger);
     db = initDatabase({ ...DEFAULT_CONFIG, database: join(tempDir, "bakend.db") }, logger);
+    const { storage } = createTestStorage(db, logger, eventBus, join(tempDir, "storage"));
 
     const engine = createJobsEngine({
       eventBus,
       db,
       logger,
       jobsDir,
+      storage,
       watch: true,
     });
 

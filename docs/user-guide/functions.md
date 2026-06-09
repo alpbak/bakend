@@ -54,7 +54,7 @@ interface FunctionContext {
 }
 ```
 
-`record` is extracted from `event.payload`. `auth.user` is populated for `auth.*` events. `storage` is deferred to Milestone 8.
+`record` is extracted from `event.payload`. `auth.user` is populated for `auth.*` events. `storage` provides `get(id)` and `delete(id)` — see [Storage](./storage.md).
 
 ## Lifecycle Events
 

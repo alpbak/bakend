@@ -7,6 +7,7 @@ import { createEventBus } from "../../../src/core/events/create-event-bus.ts";
 import { createFunctionsEngine } from "../../../src/core/functions/create-functions-engine.ts";
 import { createLogger } from "../../../src/core/logging/logger.ts";
 import { DEFAULT_CONFIG } from "../../../src/core/config/defaults.ts";
+import { createTestStorage } from "../../helpers/test-storage.ts";
 
 describe("function hot reload", () => {
   let tempDir = "";
@@ -41,12 +42,14 @@ onCreate("posts", async () => {});
     const logger = createLogger("ERROR");
     const eventBus = createEventBus(logger);
     db = initDatabase({ ...DEFAULT_CONFIG, database: join(tempDir, "bakend.db") }, logger);
+    const { storage } = createTestStorage(db, logger, eventBus, join(tempDir, "storage"));
 
     const engine = createFunctionsEngine({
       eventBus,
       db,
       logger,
       functionsDir,
+      storage,
       watch: true,
     });
 

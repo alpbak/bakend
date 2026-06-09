@@ -149,11 +149,16 @@ function checkUnique(
   return null;
 }
 
+export interface ValidateRecordOptions {
+  fileExists?: (id: string) => boolean;
+}
+
 export function validateRecord(
   db: Database,
   definition: CollectionDefinition,
   data: Record<string, unknown>,
   mode: RecordValidationMode,
+  options: ValidateRecordOptions = {},
 ): ValidationResult {
   const errors: ValidationError[] = [];
   const excludeId = typeof data.id === "string" ? data.id : undefined;
@@ -169,6 +174,19 @@ export function validateRecord(
     errors.push(...validateFieldRules(field, value));
 
     if (errors.some((error) => error.field === field.name)) {
+      continue;
+    }
+
+    if (
+      field.type === "file" &&
+      typeof value === "string" &&
+      value.length > 0 &&
+      options.fileExists &&
+      !options.fileExists(value)
+    ) {
+      errors.push(
+        invalid(field.name, "exists", `Field "${field.name}" references unknown file "${value}"`),
+      );
       continue;
     }
 

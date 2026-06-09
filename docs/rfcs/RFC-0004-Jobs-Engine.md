@@ -68,10 +68,14 @@ src/core/jobs/
 interface JobContext {
   db: Database;
   logger: Logger;
+  storage: {
+    get(id: string): Promise<FileMetadata | null>;
+    delete(id: string): Promise<boolean>;
+  };
 }
 ```
 
-`auth` and `storage` are deferred until Milestones 7–8.
+`auth` is deferred until Milestone 7. `storage` added in Milestone 8.
 
 ### Cron Parser
 

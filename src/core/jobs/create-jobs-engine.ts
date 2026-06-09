@@ -1,6 +1,7 @@
 import type { Database } from "bun:sqlite";
 import type { EventBus } from "../events/types.ts";
 import type { Logger } from "../logging/logger.ts";
+import type { StorageEngine } from "../storage/types.ts";
 import { getNextRun } from "./cron.ts";
 import { discoverJobs } from "./discover.ts";
 import type { JobContext, JobRunLog, JobsEngine, RegisteredJob } from "./types.ts";
@@ -17,6 +18,7 @@ export interface CreateJobsEngineOptions {
   logger: Logger;
   jobsDir: string;
   watch?: boolean;
+  storage: StorageEngine;
   /** Schedule discovered jobs as due immediately (for tests). */
   dueImmediately?: boolean;
   /** Override retry delay between attempts (for tests). */
@@ -50,9 +52,12 @@ export function createJobsEngine(options: CreateJobsEngineOptions): JobsEngine {
     logger,
     jobsDir,
     watch = false,
+    storage,
     dueImmediately = false,
     retryDelayMs = RETRY_DELAY_MS,
   } = options;
+
+  const storageContext = storage.getContext();
 
   const scheduledJobs = new Map<string, ScheduledJob>();
   const runHistory = new Map<string, JobRunLog[]>();
@@ -62,7 +67,7 @@ export function createJobsEngine(options: CreateJobsEngineOptions): JobsEngine {
   let shuttingDown = false;
 
   function createContext(): JobContext {
-    return { db, logger };
+    return { db, logger, storage: storageContext };
   }
 
   function appendRunLog(name: string, entry: JobRunLog): void {

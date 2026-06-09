@@ -112,6 +112,6 @@ src/core/api/
 ## Out of Scope
 
 - Schema migration / alter / delete
-- Auth permissions on collections
-- File storage for `file` fields
+- Auth permissions on collections (implemented — see authentication.md)
+- File storage for `file` fields (implemented — see storage.md)
 - Filtering, sorting, pagination

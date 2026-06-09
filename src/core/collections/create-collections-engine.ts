@@ -1,6 +1,7 @@
 import type { Database } from "bun:sqlite";
 import type { Logger } from "../logging/logger.ts";
 import type { EventBus } from "../events/types.ts";
+import type { StorageEngine } from "../storage/types.ts";
 import { generateTableDDL } from "./generate-schema.ts";
 import { validateDefinition } from "./validate-definition.ts";
 import { validateRecord } from "./validate-record.ts";
@@ -17,6 +18,7 @@ interface CreateCollectionsEngineOptions {
   db: Database;
   logger: Logger;
   eventBus: EventBus;
+  storage?: StorageEngine;
 }
 
 interface CollectionRow {
@@ -62,7 +64,7 @@ function ensureTablesExist(db: Database, definitions: CollectionMeta[], logger: 
 }
 
 export function createCollectionsEngine(options: CreateCollectionsEngineOptions): CollectionsEngine {
-  const { db, logger, eventBus } = options;
+  const { db, logger, eventBus, storage } = options;
 
   function listRows(): CollectionRow[] {
     return db
@@ -159,7 +161,9 @@ export function createCollectionsEngine(options: CreateCollectionsEngineOptions)
         };
       }
 
-      return validateRecord(db, meta.definition, data, mode);
+      return validateRecord(db, meta.definition, data, mode, {
+        fileExists: storage ? (id) => storage.exists(id) : undefined,
+      });
     },
   };
 }

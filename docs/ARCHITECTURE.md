@@ -216,18 +216,34 @@ Return Token
 
 Responsibilities:
 
-- Upload files
-- Download files
-- Access control
+- Upload files (authenticated)
+- Download files (public or protected)
+- Delete files (owner or admin)
+- Metadata in SQLite (`_files` table)
 
-Storage structure:
+On-disk layout:
 
 ```text
-storage/
-│
-├── users/
-├── products/
-└── uploads/
+{config.storage}/
+  files/
+    {fileId}
+```
+
+Access control:
+
+| Operation | Rule |
+|-----------|------|
+| Upload | Authenticated |
+| Download (public) | Anyone |
+| Download (protected) | Owner or admin |
+| Delete | Owner or admin |
+
+API:
+
+```http
+POST   /api/storage/upload
+GET    /api/storage/:id
+DELETE /api/storage/:id
 ```
 
 ---

@@ -73,6 +73,7 @@ Emitted by the functions engine (source: `functions`):
 - Same-process execution in M5 (no worker sandbox)
 - `onLogin` / `onRegister` fire on `auth.login` / `auth.register` events (Milestone 7)
 - `auth.user` is populated in function context for auth events
+- `storage.get(id)` / `storage.delete(id)` available in function context (Milestone 8)
 
 ## Deferred
 

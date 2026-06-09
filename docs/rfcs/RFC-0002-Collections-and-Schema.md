@@ -119,7 +119,7 @@ Record IDs are generated as `rec_<uuid>`.
 | `datetime` | `TEXT` | ISO-8601 |
 | `json` | `TEXT` | JSON string |
 | `relation` | `TEXT` | FK id; index auto-created |
-| `file` | `TEXT` | Path/id placeholder until storage (Milestone 8) |
+| `file` | `TEXT` | File `id` from `_files`; validated at record create/update (Milestone 8) |
 
 User-defined field names are stored as snake_case columns (e.g. `authorId` → `author_id`).
 

@@ -1,0 +1,13 @@
+{
+  "name": "attachments",
+  "fields": [
+    { "name": "title", "type": "string", "required": true },
+    { "name": "file_id", "type": "file", "required": true }
+  ],
+  "permissions": {
+    "create": "authenticated",
+    "read": "public",
+    "update": "owner",
+    "delete": "owner"
+  }
+}

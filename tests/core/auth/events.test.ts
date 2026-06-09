@@ -8,6 +8,7 @@ import { initDatabase, closeDatabase } from "../../../src/core/database/init.ts"
 import { createEventBus } from "../../../src/core/events/create-event-bus.ts";
 import { createFunctionsEngine } from "../../../src/core/functions/create-functions-engine.ts";
 import { createLogger } from "../../../src/core/logging/logger.ts";
+import { createTestStorage } from "../../helpers/test-storage.ts";
 
 describe.serial("auth events", () => {
   let tempDir = "";
@@ -56,12 +57,14 @@ onRegister("users", async ({ record, auth }) => {
     };
 
     db = initDatabase(config, logger);
+    const { storage } = createTestStorage(db, logger, eventBus, join(tempDir, "storage"));
 
     const functions = createFunctionsEngine({
       eventBus,
       db,
       logger,
       functionsDir: join(tempDir, "functions"),
+      storage,
     });
     await functions.load();
 

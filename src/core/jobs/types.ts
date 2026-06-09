@@ -1,9 +1,11 @@
 import type { Database } from "bun:sqlite";
 import type { Logger } from "../logging/logger.ts";
+import type { StorageContext } from "../storage/types.ts";
 
 export interface JobContext {
   db: Database;
   logger: Logger;
+  storage: StorageContext;
 }
 
 export type JobHandler = (context: JobContext) => void | Promise<void>;

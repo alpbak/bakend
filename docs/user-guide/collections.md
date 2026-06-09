@@ -50,7 +50,7 @@ Available on `StartResult.collections` after `bak start`.
 | `datetime` | ISO-8601 string |
 | `json` | JSON object or array |
 | `relation` | Reference to another collection (requires `collection` property) |
-| `file` | File path/id placeholder (storage integration in Milestone 8) |
+| `file` | File `id` from storage upload API (validated against `_files`) |
 
 ## System Fields
 
@@ -118,4 +118,4 @@ Programmatic access is also available via `StartResult.recordStore` after `bak s
 | Filtering, sorting, pagination | Post-M4 |
 | Schema changes / migrations | RFC-0012 |
 | Collection permissions | Implemented — see [Authentication](./authentication.md) |
-| File upload for `file` fields | 8 |
+| File upload for `file` fields | Implemented — see [Storage](./storage.md) |

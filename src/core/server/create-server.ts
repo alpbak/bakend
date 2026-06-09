@@ -3,6 +3,7 @@ import type { BakendConfig } from "../config/types.ts";
 import type { Logger } from "../logging/logger.ts";
 import type { CollectionsEngine } from "../collections/types.ts";
 import type { RecordStore } from "../collections/record-store.ts";
+import type { StorageEngine } from "../storage/types.ts";
 import { handleApiRequest } from "../api/router.ts";
 
 export interface BakendServer {
@@ -14,6 +15,7 @@ export interface CreateServerOptions {
   collections: CollectionsEngine;
   recordStore: RecordStore;
   auth: AuthEngine;
+  storage: StorageEngine;
 }
 
 export function createServer(
@@ -30,6 +32,7 @@ export function createServer(
         collections: options.collections,
         recordStore: options.recordStore,
         auth: options.auth,
+        storage: options.storage,
         authContext,
         logger,
       });

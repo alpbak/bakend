@@ -26,7 +26,7 @@ describe("initDatabase", () => {
       logger,
     );
 
-    expect(getSchemaVersion(db)).toBe("2");
+    expect(getSchemaVersion(db)).toBe("3");
 
     const collectionsTable = db
       .query<{ name: string }, []>(
@@ -52,7 +52,7 @@ describe("initDatabase", () => {
       logger,
     );
 
-    expect(getSchemaVersion(db)).toBe("2");
+    expect(getSchemaVersion(db)).toBe("3");
     closeDatabase(db);
   });
 });
