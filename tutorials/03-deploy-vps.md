@@ -26,7 +26,7 @@ sudo sh scripts/install.sh
 
 ```bash
 curl -fsSL https://alpbak.github.io/bakend/install.sh | sudo sh
-# Or: sudo BAKEND_VERSION=1.0.0 sh scripts/install.sh
+# Or: sudo BAKEND_VERSION=1.0.1 sh scripts/install.sh
 ```
 
 Verify:

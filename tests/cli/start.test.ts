@@ -69,7 +69,7 @@ describe("start", () => {
 
     const body = (await response.json()) as { status: string; version: string };
     expect(body.status).toBe("ok");
-    expect(body.version).toBe("1.0.0");
+    expect(body.version).toBe("1.0.1");
   });
 
   test("loads collections from collections/*.json at startup", async () => {

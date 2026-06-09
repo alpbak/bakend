@@ -40,8 +40,8 @@ bakend-v{version}-darwin-x64.tar.gz
 Extract and verify:
 
 ```bash
-tar -xzf bakend-v1.0.0-linux-x64.tar.gz
-sha256sum -c bakend-v1.0.0-linux-x64.tar.gz.sha256
+tar -xzf bakend-v1.0.1-linux-x64.tar.gz
+sha256sum -c bakend-v1.0.1-linux-x64.tar.gz.sha256
 sudo install -m 755 bak /usr/local/bin/bak
 bak version
 ```
@@ -58,7 +58,7 @@ sudo sh scripts/install.sh
 Install a specific version:
 
 ```bash
-sudo BAKEND_VERSION=1.0.0 sh scripts/install.sh
+sudo BAKEND_VERSION=1.0.1 sh scripts/install.sh
 ```
 
 Optional systemd unit (requires repo checkout with `packaging/systemd/bakend.service`):

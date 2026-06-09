@@ -95,7 +95,7 @@ curl http://localhost:8080/health
 ```
 
 ```json
-{ "status": "ok", "version": "1.0.0" }
+{ "status": "ok", "version": "1.0.1" }
 ```
 
 ## Custom Config Path

@@ -18,8 +18,8 @@ bakend-v{version}-darwin-x64.tar.gz
 Extract and verify the SHA256 checksum:
 
 ```bash
-tar -xzf bakend-v1.0.0-linux-x64.tar.gz
-sha256sum -c bakend-v1.0.0-linux-x64.tar.gz.sha256
+tar -xzf bakend-v1.0.1-linux-x64.tar.gz
+sha256sum -c bakend-v1.0.1-linux-x64.tar.gz.sha256
 ```
 
 ## Project Layout
@@ -152,7 +152,7 @@ See [Installation](installation.md) for full options. Quick examples:
 sudo sh scripts/install.sh
 
 # Specific version
-sudo BAKEND_VERSION=1.0.0 sh scripts/install.sh
+sudo BAKEND_VERSION=1.0.1 sh scripts/install.sh
 ```
 
 Optional systemd install (from repo checkout):

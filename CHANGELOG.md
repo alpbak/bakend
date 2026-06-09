@@ -4,6 +4,12 @@ All notable changes to Bakend are documented in this file.
 
 ## [Unreleased]
 
+## [1.0.1] — 2026-06-09
+
+### Fixed
+
+- Docker image build: install dashboard dependencies before `bun run build` so Vite is available in the release pipeline.
+
 ## [1.0.0] — 2026-06-09
 
 ### Added

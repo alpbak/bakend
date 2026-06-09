@@ -1,6 +1,6 @@
 {
   "name": "bakend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "PocketBase + Functions + Jobs — the simplest backend platform for MVPs",
   "type": "module",
   "private": true,

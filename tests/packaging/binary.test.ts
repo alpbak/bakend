@@ -52,7 +52,7 @@ describe("compiled binary", () => {
       const body = await response.json();
 
       expect(response.status).toBe(200);
-      expect(body).toEqual({ status: "ok", version: "1.0.0" });
+      expect(body).toEqual({ status: "ok", version: "1.0.1" });
     },
   );
 });

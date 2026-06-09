@@ -1,6 +1,6 @@
 name: bakend
 description: Bakend client SDK for Dart and Flutter
-version: 1.0.0
+version: 1.0.1
 
 environment:
   sdk: ^3.5.0
