@@ -1,11 +1,21 @@
 name: bakend
-description: Bakend client SDK for Dart and Flutter — auth, CRUD, storage, and realtime.
-version: 1.0.1
+description: >-
+  Official Dart/Flutter SDK for Bakend — a single-binary, SQLite-first backend
+  with auth, collections, storage, functions, jobs, and realtime.
+version: 1.0.2
 homepage: https://alpbak.github.io/bakend/
 repository: https://github.com/alpbak/bakend
 issue_tracker: https://github.com/alpbak/bakend/issues
 documentation: https://alpbak.github.io/bakend/docs/sdk/dart/
 license: MIT
+
+topics:
+  - backend
+  - sqlite
+  - flutter
+  - realtime
+  - authentication
+  - rest-api
 
 environment:
   sdk: ^3.5.0
