@@ -32,11 +32,19 @@ export function toSafeUser(user: AuthUser): AuthUser {
   };
 }
 
+export interface UserListResult {
+  items: AuthUser[];
+  total: number;
+}
+
 export interface UserStore {
   create(email: string, passwordHash: string, role: UserRole): AuthUser;
   findByEmail(email: string): (AuthUser & { passwordHash: string }) | null;
   findById(id: string): AuthUser | null;
   getPasswordHash(id: string): string | null;
+  list(limit: number, offset: number): UserListResult;
+  updateRole(id: string, role: UserRole): AuthUser | null;
+  delete(id: string): boolean;
 }
 
 export function createUserStore(db: Database): UserStore {
@@ -92,6 +100,37 @@ export function createUserStore(db: Database): UserStore {
         .query<{ password_hash: string }, [string]>("SELECT password_hash FROM _users WHERE id = ?")
         .get(id);
       return row?.password_hash ?? null;
+    },
+
+    list(limit, offset) {
+      const totalRow = db.query<{ count: number }, []>("SELECT COUNT(*) as count FROM _users").get();
+      const total = totalRow?.count ?? 0;
+
+      const rows = db
+        .query<UserRow, [number, number]>(
+          "SELECT * FROM _users ORDER BY created_at DESC LIMIT ? OFFSET ?",
+        )
+        .all(limit, offset);
+
+      return {
+        items: rows.map(rowToUser),
+        total,
+      };
+    },
+
+    updateRole(id, role) {
+      const existing = db.query<UserRow, [string]>("SELECT * FROM _users WHERE id = ?").get(id);
+      if (!existing) {
+        return null;
+      }
+
+      db.run("UPDATE _users SET role = ? WHERE id = ?", [role, id]);
+      return rowToUser({ ...existing, role });
+    },
+
+    delete(id) {
+      const result = db.run("DELETE FROM _users WHERE id = ?", [id]);
+      return result.changes > 0;
     },
   };
 }

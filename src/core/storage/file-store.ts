@@ -27,11 +27,17 @@ function rowToMetadata(row: FileRow): FileMetadata {
   };
 }
 
+export interface FileListResult {
+  items: FileMetadata[];
+  total: number;
+}
+
 export interface FileStore {
   insert(metadata: FileMetadata): void;
   getById(id: string): FileMetadata | null;
   deleteById(id: string): boolean;
   exists(id: string): boolean;
+  list(limit: number, offset: number): FileListResult;
 }
 
 export function createFileStore(db: Database): FileStore {
@@ -74,6 +80,25 @@ export function createFileStore(db: Database): FileStore {
         .get(id);
 
       return row !== null;
+    },
+
+    list(limit, offset) {
+      const totalRow = db
+        .query<{ count: number }, []>("SELECT COUNT(*) as count FROM _files")
+        .get();
+      const total = totalRow?.count ?? 0;
+
+      const rows = db
+        .query<FileRow, [number, number]>(
+          `SELECT id, filename, mime_type, size, visibility, user_id, created_at
+           FROM _files ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+        )
+        .all(limit, offset);
+
+      return {
+        items: rows.map(rowToMetadata),
+        total,
+      };
     },
   };
 }

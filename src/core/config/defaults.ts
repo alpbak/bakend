@@ -14,4 +14,7 @@ export const DEFAULT_CONFIG: BakendConfig = {
     accessTokenTtl: "15m",
     refreshTokenTtl: "7d",
   },
+  dashboard: {
+    enabled: true,
+  },
 };

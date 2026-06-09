@@ -7,6 +7,8 @@ node_modules/
 # Build output
 dist/
 out/
+dashboard/build/
+dashboard/.svelte-kit/
 
 # Database and storage
 *.db

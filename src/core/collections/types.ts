@@ -70,6 +70,8 @@ export type RecordValidationMode = "create" | "update";
 
 export interface CollectionsEngine {
   create(definition: CollectionDefinition): CollectionMeta;
+  update(name: string, definition: CollectionDefinition): CollectionMeta;
+  delete(name: string): void;
   get(name: string): CollectionMeta | null;
   list(): CollectionMeta[];
   exists(name: string): boolean;

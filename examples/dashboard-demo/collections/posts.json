@@ -1,0 +1,11 @@
+{
+  "name": "posts",
+  "fields": [
+    { "name": "title", "type": "string", "required": true },
+    { "name": "content", "type": "text" }
+  ],
+  "permissions": {
+    "read": "public",
+    "create": "authenticated"
+  }
+}

@@ -6,6 +6,15 @@ All notable changes to Bakend are documented in this file.
 
 ### Added
 
+- Milestone 10 Dashboard: SvelteKit admin UI at `/_/`, admin HTTP API, collection schema migration, in-memory log buffer, static asset serving.
+- Admin endpoints: `/api/admin/collections`, `/users`, `/storage`, `/functions`, `/jobs`, `/logs`; `GET /api/auth/me`.
+- `CollectionsEngine.update()` and `CollectionsEngine.delete()` with inline SQLite migrations.
+- `dashboard.enabled` config (`BAKEND_DASHBOARD_ENABLED`).
+- API documentation: `docs/api/admin-api.md`.
+- User guide: `docs/user-guide/dashboard.md`.
+- LLM reference: `docs/llm/dashboard.md`.
+- RFC-0011 Admin Dashboard.
+- Example: `examples/dashboard-demo/`.
 - Milestone 9 Realtime: WebSocket server at `/api/realtime`, subscribe/unsubscribe protocol, wildcard channels (`posts.*`), JWT auth via header or `?token=`, collection read-permission filtering.
 - Event Bus `onAny()` for realtime fan-out (runs before type-specific handlers).
 - API documentation: `docs/api/websocket-api.md`.

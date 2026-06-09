@@ -1,0 +1,14 @@
+{
+  "port": 8080,
+  "database": "./bakend.db",
+  "storage": "./storage",
+  "logLevel": "INFO",
+  "auth": {
+    "jwtSecret": "dashboard-demo-change-me",
+    "accessTokenTtl": "15m",
+    "refreshTokenTtl": "7d"
+  },
+  "dashboard": {
+    "enabled": true
+  }
+}

@@ -3,6 +3,7 @@ import {
   checkCollectionPermission,
   checkPermission,
   getPermissionRule,
+  isAdmin,
 } from "../../../src/core/auth/permissions.ts";
 import type { AuthContext } from "../../../src/core/auth/types.ts";
 import type { CollectionDefinition } from "../../../src/core/collections/types.ts";
@@ -68,5 +69,13 @@ describe("permissions", () => {
     expect(
       checkCollectionPermission(definition, "delete", adminContext, { user_id: "usr_1" }),
     ).toBe(true);
+  });
+
+  test("admin role bypasses all permission rules", () => {
+    expect(
+      checkCollectionPermission(definition, "update", adminContext, { user_id: "usr_2" }),
+    ).toBe(true);
+    expect(isAdmin(adminContext)).toBe(true);
+    expect(isAdmin(authContext)).toBe(false);
   });
 });

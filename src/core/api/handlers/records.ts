@@ -3,6 +3,7 @@ import {
   checkCollectionPermission,
   getPermissionRule,
   hasOwnerField,
+  isAdmin,
   OWNER_FIELD_NAME,
   shouldFilterListByOwner,
 } from "../../auth/permissions.ts";
@@ -85,7 +86,9 @@ export function handleListRecords(
   }
 
   const listOptions =
-    shouldFilterListByOwner(definition) && context.authContext
+    shouldFilterListByOwner(definition) &&
+    context.authContext &&
+    !isAdmin(context.authContext)
       ? { userId: context.authContext.user.id }
       : undefined;
 

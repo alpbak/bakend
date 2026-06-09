@@ -17,12 +17,12 @@ RFC numbers are permanent and must never be reused.
 | [RFC-0008](RFC-0008-CLI-and-Project-Structure.md) | CLI and Project Structure | Stub |
 | [RFC-0009](RFC-0009-SDK-Design.md) | SDK Design | Stub |
 | [RFC-0010](RFC-0010-Packaging-and-Deployment.md) | Packaging and Deployment | Stub |
+| [RFC-0011](RFC-0011-Admin-Dashboard.md) | Admin Dashboard | Draft |
 
 ## Reserved RFC Numbers
 
 | RFC | Title |
 |---|---|
-| RFC-0011 | Admin Dashboard |
 | RFC-0012 | Migration Engine |
 | RFC-0013 | Logging and Observability |
 | RFC-0014 | Backup and Restore |

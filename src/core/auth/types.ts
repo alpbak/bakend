@@ -26,6 +26,11 @@ export interface AuthTokens {
   user: AuthUser;
 }
 
+export interface UserListResult {
+  items: AuthUser[];
+  total: number;
+}
+
 export interface AuthEngine {
   register(email: string, password: string): Promise<AuthTokens>;
   login(email: string, password: string): Promise<AuthTokens>;
@@ -33,6 +38,9 @@ export interface AuthEngine {
   logout(refreshToken: string): Promise<void>;
   validateAccessToken(token: string): Promise<AuthUser | null>;
   resolveAuthContext(request: Request): Promise<AuthContext | null>;
+  listUsers(limit: number, offset: number): UserListResult;
+  updateUserRole(id: string, role: UserRole): Promise<AuthUser>;
+  deleteUser(id: string): Promise<boolean>;
 }
 
 export class AuthError extends Error {

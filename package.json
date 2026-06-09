@@ -15,7 +15,10 @@
     "dev": "bun run src/index.ts dev",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
-    "lint": "echo 'Lint not configured yet'"
+    "lint": "echo 'Lint not configured yet'",
+    "dashboard:dev": "cd dashboard && bun run dev",
+    "dashboard:build": "cd dashboard && bun run build",
+    "dashboard:check": "cd dashboard && bun run check"
   },
   "devDependencies": {
     "@types/bun": "latest",

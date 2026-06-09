@@ -14,6 +14,11 @@ export interface FileMetadata {
   createdAt: string;
 }
 
+export interface FileListResult {
+  items: FileMetadata[];
+  total: number;
+}
+
 export interface StorageEngine {
   upload(
     data: Uint8Array,
@@ -26,6 +31,7 @@ export interface StorageEngine {
   read(id: string): Uint8Array | null;
   delete(id: string): Promise<boolean>;
   exists(id: string): boolean;
+  list(limit: number, offset: number): FileListResult;
   getContext(): StorageContext;
 }
 

@@ -3,6 +3,8 @@ import type { Logger } from "../logging/logger.ts";
 import type { EventBus } from "../events/types.ts";
 import type { StorageEngine } from "../storage/types.ts";
 import { generateTableDDL } from "./generate-schema.ts";
+import { quoteIdentifier } from "./naming.ts";
+import { applySchemaMigration, findRelationDependents } from "./migrate-schema.ts";
 import { validateDefinition } from "./validate-definition.ts";
 import { validateRecord } from "./validate-record.ts";
 import {
@@ -118,6 +120,84 @@ export function createCollectionsEngine(options: CreateCollectionsEngineOptions)
         createdAt: now,
         updatedAt: now,
       };
+    },
+
+    update(name: string, definition: CollectionDefinition): CollectionMeta {
+      const existing = this.get(name);
+      if (!existing) {
+        throw new CollectionError(`Collection "${name}" does not exist`);
+      }
+
+      if (definition.name !== name) {
+        throw new CollectionError("Collection name cannot be changed");
+      }
+
+      const existingCollections = listRows()
+        .map((row) => row.name)
+        .filter((collectionName) => collectionName !== name);
+      const validation = validateDefinition(definition, { existingCollections });
+
+      if (!validation.valid) {
+        const message = validation.errors.map((error) => error.message).join("; ");
+        throw new CollectionError(message);
+      }
+
+      applySchemaMigration(db, name, existing.definition, definition);
+
+      const now = new Date().toISOString();
+      const definitionJson = JSON.stringify(definition);
+
+      db.run(
+        "UPDATE _collections SET definition = ?, updated_at = ? WHERE name = ?",
+        [definitionJson, now, name],
+      );
+
+      eventBus.emit("system.collection.updated", {
+        source: "collections",
+        payload: { name },
+      });
+
+      logger.info(`Collection updated: ${name}`);
+
+      return {
+        name,
+        definition,
+        createdAt: existing.createdAt,
+        updatedAt: now,
+      };
+    },
+
+    delete(name: string): void {
+      const existing = this.get(name);
+      if (!existing) {
+        throw new CollectionError(`Collection "${name}" does not exist`);
+      }
+
+      const allDefinitions = listRows().map((row) => parseDefinition(row.definition));
+      const dependents = findRelationDependents(allDefinitions, name);
+
+      if (dependents.length > 0) {
+        throw new CollectionError(
+          `Cannot delete collection "${name}": referenced by relation fields in ${dependents.join(", ")}`,
+        );
+      }
+
+      db.run("BEGIN");
+      try {
+        db.run(`DROP TABLE ${quoteIdentifier(name)}`);
+        db.run("DELETE FROM _collections WHERE name = ?", [name]);
+        db.run("COMMIT");
+      } catch (error) {
+        db.run("ROLLBACK");
+        throw new CollectionError(`Failed to delete collection "${name}": ${String(error)}`);
+      }
+
+      eventBus.emit("system.collection.deleted", {
+        source: "collections",
+        payload: { name },
+      });
+
+      logger.info(`Collection deleted: ${name}`);
     },
 
     get(name: string): CollectionMeta | null {

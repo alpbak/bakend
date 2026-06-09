@@ -1,6 +1,6 @@
 # API Summary
 
-> Status: CRUD (Milestone 4), Authentication (Milestone 7), Storage (Milestone 8), and Realtime (Milestone 9) implemented.
+> Status: CRUD (Milestone 4), Authentication (Milestone 7), Storage (Milestone 8), Realtime (Milestone 9), and Admin API (Milestone 10) implemented.
 
 ## REST API (Milestone 4)
 
@@ -55,6 +55,28 @@ Channels (all Event Bus types):
 - `system.collection.created`
 
 Collection events are filtered by `read` permission. Full spec: `docs/api/websocket-api.md`
+
+## Admin API (Milestone 10 — implemented)
+
+Dashboard at `/_/`. Requires `admin` role.
+
+```http
+GET  /api/auth/me
+GET  /api/admin/collections
+POST /api/admin/collections
+PUT  /api/admin/collections/:name
+DELETE /api/admin/collections/:name
+GET  /api/admin/users
+PATCH /api/admin/users/:id
+DELETE /api/admin/users/:id
+GET  /api/admin/storage
+GET  /api/admin/functions
+GET  /api/admin/jobs
+GET  /api/admin/jobs/:name/runs
+GET  /api/admin/logs
+```
+
+Full specification: `docs/api/admin-api.md`
 
 ## Response Format
 

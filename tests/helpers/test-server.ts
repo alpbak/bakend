@@ -6,8 +6,11 @@ import { createAuthEngine } from "../../src/core/auth/create-auth-engine.ts";
 import { createCollectionsEngine } from "../../src/core/collections/create-collections-engine.ts";
 import { createRecordStore } from "../../src/core/collections/record-store.ts";
 import { DEFAULT_CONFIG } from "../../src/core/config/defaults.ts";
+import { getAdminEmailFromEnv } from "../../src/core/config/load.ts";
 import { createEventBus } from "../../src/core/events/create-event-bus.ts";
 import { createLogger } from "../../src/core/logging/logger.ts";
+import { createFunctionsEngine } from "../../src/core/functions/create-functions-engine.ts";
+import { createJobsEngine } from "../../src/core/jobs/create-jobs-engine.ts";
 import { createRealtimeEngine } from "../../src/core/realtime/create-realtime-engine.ts";
 import { createServer } from "../../src/core/server/create-server.ts";
 import { createTestStorage } from "./test-storage.ts";
@@ -79,6 +82,28 @@ export function createTestServer() {
     logger,
     eventBus,
     config,
+    adminEmail: getAdminEmailFromEnv(),
+  });
+
+  const functionsDir = mkdtempSync(join(tmpdir(), "bakend-test-functions-"));
+  const jobsDir = mkdtempSync(join(tmpdir(), "bakend-test-jobs-"));
+
+  const functions = createFunctionsEngine({
+    eventBus,
+    db,
+    logger,
+    functionsDir,
+    watch: false,
+    storage,
+  });
+
+  const jobs = createJobsEngine({
+    eventBus,
+    db,
+    logger,
+    jobsDir,
+    watch: false,
+    storage,
   });
 
   const realtime = createRealtimeEngine({ eventBus, collections, logger });
@@ -87,17 +112,22 @@ export function createTestServer() {
     recordStore,
     auth,
     storage,
+    functions,
+    jobs,
     realtime,
   });
 
   return {
     db,
     server,
+    logger,
     eventBus,
     collections,
     recordStore,
     auth,
     storage,
+    functions,
+    jobs,
     realtime,
     config,
     storageRoot,

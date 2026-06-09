@@ -12,7 +12,7 @@ import {
   type SessionStore,
 } from "./session-store.ts";
 import type { AuthContext, AuthEngine, AuthTokens, AuthUser, UserRole } from "./types.ts";
-import { InvalidCredentialsError, InvalidTokenError } from "./types.ts";
+import { AuthError, InvalidCredentialsError, InvalidTokenError, USER_ROLES } from "./types.ts";
 import { createUserStore, toSafeUser, type UserStore } from "./user-store.ts";
 
 export interface CreateAuthEngineOptions {
@@ -176,6 +176,34 @@ export function createAuthEngine(options: CreateAuthEngineOptions): AuthEngine {
 
       const user = await this.validateAccessToken(token);
       return user ? { user } : null;
+    },
+
+    listUsers(limit, offset) {
+      return userStore.list(limit, offset);
+    },
+
+    async updateUserRole(id, role) {
+      if (!USER_ROLES.includes(role)) {
+        throw new AuthError("bad_request", `Invalid role: ${role}`, 400);
+      }
+
+      const user = userStore.updateRole(id, role);
+      if (!user) {
+        throw new AuthError("not_found", "User not found", 404);
+      }
+
+      logger.debug(`User role updated: ${id} -> ${role}`);
+      return user;
+    },
+
+    async deleteUser(id) {
+      const deleted = userStore.delete(id);
+      if (!deleted) {
+        throw new AuthError("not_found", "User not found", 404);
+      }
+
+      logger.debug(`User deleted: ${id}`);
+      return true;
     },
   };
 }

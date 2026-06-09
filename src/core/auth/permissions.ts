@@ -25,11 +25,19 @@ export function hasOwnerField(definition: CollectionDefinition): boolean {
   );
 }
 
+export function isAdmin(authContext: AuthContext | null): boolean {
+  return authContext?.user.role === "admin";
+}
+
 export function checkPermission(
   rule: PermissionRule,
   authContext: AuthContext | null,
   record?: Record<string, unknown>,
 ): boolean {
+  if (isAdmin(authContext)) {
+    return true;
+  }
+
   switch (rule) {
     case "public":
       return true;

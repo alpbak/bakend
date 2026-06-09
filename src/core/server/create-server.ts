@@ -5,9 +5,12 @@ import type { Logger } from "../logging/logger.ts";
 import type { CollectionsEngine } from "../collections/types.ts";
 import type { RecordStore } from "../collections/record-store.ts";
 import type { StorageEngine } from "../storage/types.ts";
+import type { FunctionsEngine } from "../functions/types.ts";
+import type { JobsEngine } from "../jobs/types.ts";
 import type { RealtimeEngine } from "../realtime/types.ts";
 import type { RealtimeConnectionData } from "../realtime/types.ts";
 import { handleApiRequest } from "../api/router.ts";
+import { handleDashboardRequest } from "./serve-dashboard.ts";
 
 export interface BakendServer {
   port: number;
@@ -19,6 +22,8 @@ export interface CreateServerOptions {
   recordStore: RecordStore;
   auth: AuthEngine;
   storage: StorageEngine;
+  functions: FunctionsEngine;
+  jobs: JobsEngine;
   realtime: RealtimeEngine;
 }
 
@@ -72,6 +77,11 @@ export function createServer(
         return new Response("WebSocket upgrade failed", { status: 400 });
       }
 
+      const dashboardResponse = handleDashboardRequest(request, config.dashboard.enabled, logger);
+      if (dashboardResponse) {
+        return dashboardResponse;
+      }
+
       const authContext = await options.auth.resolveAuthContext(request);
 
       return handleApiRequest(request, {
@@ -79,6 +89,8 @@ export function createServer(
         recordStore: options.recordStore,
         auth: options.auth,
         storage: options.storage,
+        functions: options.functions,
+        jobs: options.jobs,
         authContext,
         logger,
       });

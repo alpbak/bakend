@@ -3,7 +3,10 @@ import type { Logger } from "../logging/logger.ts";
 import type { CollectionsEngine } from "../collections/types.ts";
 import type { RecordStore } from "../collections/record-store.ts";
 import type { AuthContext } from "../auth/types.ts";
+import type { FunctionsEngine } from "../functions/types.ts";
+import type { JobsEngine } from "../jobs/types.ts";
 import type { StorageEngine } from "../storage/types.ts";
+import { handleAdminRequest, handleAuthMeRequest } from "./admin/router.ts";
 import { handleAuthRoute } from "./handlers/auth.ts";
 import { handleCollectionRoute, handleRecordRoute } from "./handlers/records.ts";
 import {
@@ -17,6 +20,8 @@ export interface ApiRouterContext {
   recordStore: RecordStore;
   auth: AuthEngine;
   storage: StorageEngine;
+  functions: FunctionsEngine;
+  jobs: JobsEngine;
   authContext: AuthContext | null;
   logger: Logger;
 }
@@ -100,6 +105,16 @@ export async function handleApiRequest(
   const healthResponse = handleHealthRequest(request, context.logger);
   if (healthResponse) {
     return healthResponse;
+  }
+
+  const authMeResponse = handleAuthMeRequest(context, request);
+  if (authMeResponse) {
+    return authMeResponse;
+  }
+
+  const adminResponse = await handleAdminRequest(request, context);
+  if (adminResponse) {
+    return adminResponse;
   }
 
   const authRoute = matchAuthRoute(url.pathname);

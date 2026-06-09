@@ -125,6 +125,10 @@ export function createStorageEngine(options: CreateStorageEngineOptions): Storag
       return fileStore.exists(id);
     },
 
+    list(limit, offset) {
+      return fileStore.list(limit, offset);
+    },
+
     getContext,
   };
 }

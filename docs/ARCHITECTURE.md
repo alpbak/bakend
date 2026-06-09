@@ -394,6 +394,11 @@ Technology:
 
 - SvelteKit
 
+URL:
+
+- Served at `/_/` (PocketBase-style)
+- Health checks remain at `/` and `/health`
+
 Sections:
 
 ```text
@@ -404,12 +409,37 @@ Files
 Functions
 Jobs
 Logs
-Settings
 ```
 
-Dashboard communicates only through public APIs.
+Dashboard communicates only through HTTP APIs.
 
 No direct database access.
+
+## Admin API
+
+Admin operations use `/api/admin/*` routes. All require JWT with `admin` role.
+
+```http
+GET/POST   /api/admin/collections
+GET/PUT/DELETE /api/admin/collections/:name
+GET        /api/admin/users
+PATCH/DELETE /api/admin/users/:id
+GET        /api/admin/storage
+GET        /api/admin/functions
+GET        /api/admin/jobs
+GET        /api/admin/jobs/:name/runs
+GET        /api/admin/logs
+```
+
+Login uses `POST /api/auth/login`. Session identity via `GET /api/auth/me`.
+
+## Admin Permission Bypass
+
+Users with `admin` role bypass collection `permissions` rules on public CRUD endpoints, enabling full record management from the dashboard.
+
+## Static Assets
+
+SvelteKit builds to `dashboard/build/`. The Bun server serves these files at `/_/*` with SPA fallback.
 
 ---
 

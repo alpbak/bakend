@@ -108,6 +108,8 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
     recordStore,
     auth,
     storage,
+    functions,
+    jobs,
     realtime,
   });
 

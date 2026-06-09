@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { LOG_LEVELS } from "../logging/types.ts";
 import type { LogLevel } from "../logging/types.ts";
 import { DEFAULT_CONFIG, DEFAULT_CONFIG_PATH } from "./defaults.ts";
-import type { AuthConfig, BakendConfig, LoadConfigOptions } from "./types.ts";
+import type { AuthConfig, BakendConfig, DashboardConfig, LoadConfigOptions } from "./types.ts";
 
 function isLogLevel(value: unknown): value is LogLevel {
   return typeof value === "string" && LOG_LEVELS.includes(value as LogLevel);
@@ -49,6 +49,22 @@ function validateAuthConfig(raw: unknown): AuthConfig {
   };
 }
 
+function validateDashboardConfig(raw: unknown): DashboardConfig {
+  const defaults = DEFAULT_CONFIG.dashboard;
+  const source =
+    typeof raw === "object" && raw !== null && !Array.isArray(raw)
+      ? (raw as Record<string, unknown>)
+      : {};
+
+  const enabled = source.enabled ?? defaults.enabled;
+
+  if (typeof enabled !== "boolean") {
+    throw new Error("Invalid config: dashboard.enabled must be a boolean");
+  }
+
+  return { enabled };
+}
+
 function validateConfig(raw: Record<string, unknown>): BakendConfig {
   const port = raw.port ?? DEFAULT_CONFIG.port;
   const database = raw.database ?? DEFAULT_CONFIG.database;
@@ -77,11 +93,12 @@ function validateConfig(raw: Record<string, unknown>): BakendConfig {
     storage,
     logLevel,
     auth: validateAuthConfig(raw.auth),
+    dashboard: validateDashboardConfig(raw.dashboard),
   };
 }
 
 function applyEnvOverrides(config: BakendConfig): BakendConfig {
-  const next = { ...config, auth: { ...config.auth } };
+  const next = { ...config, auth: { ...config.auth }, dashboard: { ...config.dashboard } };
 
   const port = process.env.BAKEND_PORT;
   if (port !== undefined) {
@@ -118,7 +135,20 @@ function applyEnvOverrides(config: BakendConfig): BakendConfig {
     next.auth.jwtSecret = jwtSecret;
   }
 
-  return validateConfig(next);
+  const dashboardEnabled = process.env.BAKEND_DASHBOARD_ENABLED;
+  if (dashboardEnabled !== undefined) {
+    if (dashboardEnabled === "true") {
+      next.dashboard = { enabled: true };
+    } else if (dashboardEnabled === "false") {
+      next.dashboard = { enabled: false };
+    } else {
+      throw new Error(
+        "Invalid BAKEND_DASHBOARD_ENABLED environment variable: must be 'true' or 'false'",
+      );
+    }
+  }
+
+  return validateConfig({ ...next, auth: next.auth, dashboard: next.dashboard });
 }
 
 export function getAdminEmailFromEnv(): string | undefined {

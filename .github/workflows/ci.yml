@@ -55,3 +55,16 @@ jobs:
           bun-version: latest
       - run: bun install
       - run: bun test
+
+  dashboard:
+    name: Dashboard build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: latest
+      - run: bun install
+      - run: cd dashboard && bun install
+      - run: bun run dashboard:build
+      - run: bun run dashboard:check
