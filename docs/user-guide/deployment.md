@@ -2,7 +2,7 @@
 
 Bakend ships as a single compiled binary with an embedded admin dashboard. No Bun or Node.js runtime is required on the server.
 
-For local development, see [Getting Started](getting-started.md).
+For local development, see [Getting Started](getting-started.md). For install options, see [Installation](installation.md).
 
 ## Release Binary
 
@@ -135,13 +135,17 @@ Internal database schema migrations run automatically on startup. See [RFC-0018]
 
 ## Install Script
 
-For automated install from a release URL:
+See [Installation](installation.md) for full options. Quick examples:
 
 ```bash
-sudo BAKEND_INSTALL_URL=https://github.com/alpbak/bakend/releases/download/v0.1.0/bakend-v0.1.0-linux-x64.tar.gz sh scripts/install.sh
+# Latest release
+sudo sh scripts/install.sh
+
+# Specific version
+sudo BAKEND_VERSION=0.1.0-beta sh scripts/install.sh
 ```
 
-Optional systemd install:
+Optional systemd install (from repo checkout):
 
 ```bash
 sudo BAKEND_INSTALL_SYSTEMD=1 sh scripts/install.sh

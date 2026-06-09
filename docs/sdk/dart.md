@@ -4,7 +4,7 @@
 
 Flutter and Dart client library.
 
-**Package:** `bakend` (workspace-local; pub.dev publishing in Milestone 13)
+**Package:** `bakend` (workspace-local during beta; pub.dev publishing planned post-beta)
 
 ## Installation
 

@@ -4,6 +4,28 @@ All notable changes to Bakend are documented in this file.
 
 ## [Unreleased]
 
+## [0.1.0-beta] — 2026-06-09
+
+### Added
+
+- Milestone 13 Beta Release: documentation hub, tutorials, examples polish, Astro website, GitHub Pages deploy.
+- Documentation hub: `docs/README.md`, section indexes (`user-guide/`, `api/`, `sdk/`, `llm/`).
+- User guides: `docs/user-guide/installation.md`, `docs/user-guide/sdk.md`.
+- Tutorials: `tutorials/01-todo-api.md`, `02-realtime-app.md`, `03-deploy-vps.md`.
+- Example: `examples/todo-api/` (authenticated todo CRUD).
+- Example READMEs: `functions-demo/`, `jobs-demo/`; `dashboard-demo/` added to examples index.
+- Website: `website/` (Astro static site).
+- Release CI: `bakend-latest-*` alias assets for `install.sh` latest downloads.
+- Root README updated for v0.1 beta status.
+- Fix: resolve project config path to absolute so nested functions load from example directories.
+
+### Notes
+
+- SDK registry publishing (npm, pub.dev) deferred to post-beta.
+- `bak init` project scaffolding remains deferred (RFC-0008).
+
+## [0.1.0] — prior milestones
+
 ### Added
 
 - Milestone 12 Packaging: single executable build (`bun run build` → `dist/bak`), embedded admin dashboard, Docker image, systemd unit, upgrade documentation.

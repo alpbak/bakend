@@ -4,7 +4,7 @@
 
 Client library for authentication, CRUD, storage, and realtime.
 
-**Package:** `@bakend/client` (workspace-local; npm publishing in Milestone 13)
+**Package:** `@bakend/client` (workspace-local during beta; npm publishing planned post-beta)
 
 ## Installation
 

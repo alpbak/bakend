@@ -1,0 +1,30 @@
+---
+import Layout from "../layouts/Layout.astro";
+import InstallCommand from "../components/InstallCommand.astro";
+import FeatureGrid from "../components/FeatureGrid.astro";
+
+const base = import.meta.env.BASE_URL;
+const repo = "https://github.com/alpbak/bakend";
+---
+
+<Layout title="Bakend — PocketBase + Functions + Jobs">
+  <span class="hero-tag">v0.1 beta</span>
+  <h1>The backend that gets out of your way</h1>
+  <p class="lead">
+    Bakend combines SQLite, REST APIs, authentication, storage, realtime, TypeScript
+    functions, and cron jobs into a single executable. No cloud account. No Kubernetes.
+  </p>
+
+  <div class="btn-row">
+    <a class="btn btn-primary" href={`${base}tutorials/`}>Get started</a>
+    <a class="btn btn-secondary" href={`${repo}/releases`} target="_blank" rel="noopener noreferrer"
+      >Download</a
+    >
+    <a class="btn btn-secondary" href={`${repo}`} target="_blank" rel="noopener noreferrer"
+      >View on GitHub</a
+    >
+  </div>
+
+  <InstallCommand />
+  <FeatureGrid />
+</Layout>

@@ -1,0 +1,62 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const repo = "https://github.com/alpbak/bakend/tree/main";
+const sections = [
+  {
+    title: "User guide",
+    href: `${repo}/docs/user-guide`,
+    desc: "Installation, collections, auth, storage, realtime, functions, jobs, deployment",
+  },
+  {
+    title: "API reference",
+    href: `${repo}/docs/api`,
+    desc: "REST, auth, storage, WebSocket, and admin endpoints",
+  },
+  {
+    title: "SDKs",
+    href: `${repo}/docs/sdk`,
+    desc: "JavaScript/TypeScript and Dart client libraries",
+  },
+  {
+    title: "Architecture",
+    href: `${repo}/docs/ARCHITECTURE.md`,
+    desc: "System design and technology stack",
+  },
+  {
+    title: "RFCs",
+    href: `${repo}/docs/rfcs`,
+    desc: "Authoritative design specifications",
+  },
+  {
+    title: "LLM reference",
+    href: `${repo}/docs/llm`,
+    desc: "Concise docs for AI agents",
+  },
+];
+---
+
+<Layout title="Documentation — Bakend" description="Bakend documentation hub">
+  <h1>Documentation</h1>
+  <p class="lead">Guides and API references for building with Bakend.</p>
+
+  <div class="card-grid">
+    {
+      sections.map((s) => (
+        <div class="card">
+          <a class="card-link" href={s.href} target="_blank" rel="noopener noreferrer">
+            <h3>{s.title}</h3>
+            <p>{s.desc}</p>
+          </a>
+        </div>
+      ))
+    }
+  </div>
+
+  <h2>Documentation hub</h2>
+  <p>
+    Start at the <a href={`${repo}/docs/README.md`} target="_blank" rel="noopener noreferrer"
+      >docs README</a
+    > for the full index.
+  </p>
+</Layout>

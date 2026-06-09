@@ -77,6 +77,15 @@ Each tarball contains:
 
 SHA256 checksums are published alongside release assets.
 
+Latest-release aliases are also published for `install.sh`:
+
+```text
+bakend-latest-linux-x64.tar.gz
+bakend-latest-linux-arm64.tar.gz
+bakend-latest-darwin-arm64.tar.gz
+bakend-latest-darwin-x64.tar.gz
+```
+
 ## Dashboard Embedding
 
 The admin dashboard is built with `@sveltejs/adapter-static` (base path `/_`). At compile time, all files under `dashboard/build/` are embedded using Bun's `import ... with { type: "file" }` mechanism.
@@ -171,6 +180,10 @@ Full hosting at `bakend.dev` is deferred.
 | `docker-compose.yml` | Local VPS simulation |
 | `.github/workflows/release.yml` | Release CI |
 
+## Website (Milestone 13)
+
+Static marketing site at `website/` (Astro), deployed to GitHub Pages. Full hosting at `bakend.dev` remains optional.
+
 ## Status
 
-Draft — Milestone 12
+Implemented — Milestone 12 (packaging), Milestone 13 (beta website, install aliases)

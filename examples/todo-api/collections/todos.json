@@ -1,0 +1,14 @@
+{
+  "name": "todos",
+  "fields": [
+    { "name": "title", "type": "string", "required": true },
+    { "name": "completed", "type": "boolean" },
+    { "name": "user_id", "type": "string" }
+  ],
+  "permissions": {
+    "create": "authenticated",
+    "read": "owner",
+    "update": "owner",
+    "delete": "owner"
+  }
+}

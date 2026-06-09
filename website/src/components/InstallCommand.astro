@@ -1,0 +1,26 @@
+---
+const repo = "alpbak/bakend";
+---
+
+<div class="install-block">
+  <h3>Install</h3>
+  <pre><code># Latest release (Linux / macOS)
+git clone https://github.com/{repo}.git
+cd bakend
+sudo sh scripts/install.sh
+
+# Or download from GitHub Releases
+# https://github.com/{repo}/releases</code></pre>
+  <p class="install-note">
+    See <a href={`https://github.com/${repo}/blob/main/docs/user-guide/installation.md`}>installation guide</a>
+    for Docker and development setup.
+  </p>
+</div>
+
+<style>
+  .install-note {
+    font-size: 0.875rem;
+    color: var(--muted);
+    margin-top: 0.75rem;
+  }
+</style>

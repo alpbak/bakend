@@ -1,0 +1,26 @@
+---
+const features = [
+  { name: "Collections", desc: "Dynamic SQLite schemas from JSON definitions" },
+  { name: "Authentication", desc: "JWT, sessions, and collection permissions" },
+  { name: "Storage", desc: "File uploads with public and protected ACLs" },
+  { name: "Realtime", desc: "WebSocket subscriptions for live events" },
+  { name: "Functions", desc: "TypeScript triggers with hot reload" },
+  { name: "Jobs", desc: "Cron-scheduled background tasks" },
+  { name: "Dashboard", desc: "Embedded admin UI at /_/" },
+  { name: "Single binary", desc: "Deploy without Bun or Node on the server" },
+];
+---
+
+<section>
+  <h2>Everything in one executable</h2>
+  <div class="card-grid">
+    {
+      features.map((f) => (
+        <div class="card">
+          <h3>{f.name}</h3>
+          <p>{f.desc}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>

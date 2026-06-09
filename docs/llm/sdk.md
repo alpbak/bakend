@@ -9,7 +9,7 @@
 | JavaScript / TypeScript | `@bakend/client` | `sdk/javascript/` |
 | Dart / Flutter | `bakend` | `sdk/dart/` |
 
-Publishing to npm/pub.dev is deferred to Milestone 13.
+Publishing to npm/pub.dev is planned post-beta (workspace install during v0.1 beta).
 
 ## Entry Point
 

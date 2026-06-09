@@ -1,8 +1,12 @@
 # Getting Started
 
+## Tutorials
+
+New to Bakend? Start with [Tutorial 01: Build a Todo API](../../tutorials/01-todo-api.md).
+
 ## Production Deployment
 
-For VPS or Docker deployment with the compiled binary, see [Deployment](deployment.md).
+For installing the binary, see [Installation](installation.md). For VPS or Docker deployment, see [Deployment](deployment.md).
 
 ## Development Setup
 

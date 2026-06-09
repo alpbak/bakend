@@ -56,6 +56,9 @@ jobs:
           cp bakend.json.example release/
           tar -czf "release/${archive}" -C release bak LICENSE bakend.json.example
           sha256sum "release/${archive}" > "release/${archive}.sha256"
+          latest="bakend-latest-${{ matrix.asset_os }}-${{ matrix.asset_arch }}.tar.gz"
+          cp "release/${archive}" "release/${latest}"
+          sha256sum "release/${latest}" > "release/${latest}.sha256"
 
       - uses: actions/upload-artifact@v4
         with:

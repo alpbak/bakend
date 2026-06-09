@@ -1,0 +1,42 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const repo = "https://github.com/alpbak/bakend/tree/main/examples";
+const examples = [
+  { name: "todo-api", desc: "Authenticated todo CRUD (Tutorial 01)" },
+  { name: "auth-demo", desc: "Registration, login, and permissions" },
+  { name: "realtime-demo", desc: "WebSocket subscriptions with browser client" },
+  { name: "storage-demo", desc: "File upload and collection file fields" },
+  { name: "functions-demo", desc: "onCreate collection triggers" },
+  { name: "jobs-demo", desc: "Scheduled heartbeat job" },
+  { name: "sdk-demo", desc: "@bakend/client SDK usage" },
+  { name: "dashboard-demo", desc: "Admin dashboard at /_/" },
+];
+---
+
+<Layout title="Examples — Bakend" description="Runnable Bakend example projects">
+  <h1>Examples</h1>
+  <p class="lead">Clone the repo and run any example with Bun or the compiled binary.</p>
+
+  <div class="card-grid">
+    {
+      examples.map((e) => (
+        <div class="card">
+          <a
+            class="card-link"
+            href={`${repo}/${e.name}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <h3>{e.name}</h3>
+            <p>{e.desc}</p>
+          </a>
+        </div>
+      ))
+    }
+  </div>
+
+  <h2>Run an example</h2>
+  <pre><code>cd examples/todo-api
+bun run ../../src/index.ts start</code></pre>
+</Layout>
