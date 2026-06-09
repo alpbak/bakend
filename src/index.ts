@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 
 import { start } from "./cli/start.ts";
+import { VERSION } from "./version.ts";
 
 function printUsage(): void {
   console.log(`Bakend — PocketBase + Functions + Jobs
@@ -8,6 +9,7 @@ function printUsage(): void {
 Usage:
   bak start [--config <path>] [--watch]   Start the Bakend server
   bak dev [--config <path>]               Start with function and job hot reload
+  bak version                             Print Bakend version
   bak --help                              Show this help message
 `);
 }
@@ -74,6 +76,11 @@ async function main(): Promise<void> {
 
     if (command === "dev") {
       await start({ configPath, watch: true });
+      return;
+    }
+
+    if (command === "version") {
+      console.log(VERSION);
       return;
     }
 

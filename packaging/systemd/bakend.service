@@ -1,0 +1,20 @@
+[Unit]
+Description=Bakend Backend
+Documentation=https://github.com/alpbak/bakend
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=bakend
+Group=bakend
+WorkingDirectory=/opt/bakend
+ExecStart=/opt/bakend/bak start --config /opt/bakend/bakend.json
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=30
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

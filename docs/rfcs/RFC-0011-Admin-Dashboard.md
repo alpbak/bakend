@@ -20,7 +20,7 @@ Bakend needs a web UI so developers can manage collections, users, storage, func
 - Job manual trigger from UI
 - Function source code viewer
 - Persistent log files — deferred to RFC-0013
-- Single-executable dashboard bundling — deferred to RFC-0010 / Milestone 12
+- Single-executable dashboard bundling — implemented in RFC-0010 / Milestone 12
 
 ## Dashboard URL
 

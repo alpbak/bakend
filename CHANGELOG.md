@@ -6,6 +6,16 @@ All notable changes to Bakend are documented in this file.
 
 ### Added
 
+- Milestone 12 Packaging: single executable build (`bun run build` → `dist/bak`), embedded admin dashboard, Docker image, systemd unit, upgrade documentation.
+- `bak version` CLI command.
+- Build pipeline: `scripts/build.ts`, cross-platform compile targets (`build:linux-x64`, etc.).
+- Docker: `Dockerfile`, `docker-compose.yml`.
+- systemd unit: `packaging/systemd/bakend.service`.
+- Install helper: `scripts/install.sh`.
+- Release CI: `.github/workflows/release.yml` (GitHub Releases + ghcr.io).
+- Packaging CI job on pull requests.
+- Documentation: `docs/user-guide/deployment.md`, RFC-0010 Packaging and Deployment, RFC-0018 Versioning and Upgrade Policy.
+- Tests: `tests/cli/version.test.ts`, `tests/packaging/` (opt-in via `BAKEND_RUN_PACKAGING_BUILD=1`).
 - Milestone 11 SDKs: JavaScript/TypeScript client (`@bakend/client`) and Dart client (`bakend`) for auth, CRUD, storage, and realtime.
 - SDK packages: `sdk/javascript/`, `sdk/dart/`.
 - SDK integration tests: `tests/sdk/javascript/`, `sdk/dart/test/`.

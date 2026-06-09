@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { join, normalize } from "node:path";
 import type { Logger } from "../logging/logger.ts";
+import { DASHBOARD_ASSETS, DASHBOARD_EMBEDDED } from "./dashboard-assets.generated.ts";
 
 const DASHBOARD_BUILD_DIR = join(import.meta.dir, "../../../dashboard/build");
 
@@ -22,7 +23,7 @@ function getMimeType(filePath: string): string {
   return MIME_TYPES[extension] ?? "application/octet-stream";
 }
 
-function resolveDashboardFile(pathname: string): string | null {
+function resolveDashboardRelativePath(pathname: string): string | null {
   if (!pathname.startsWith("/_/") && pathname !== "/_") {
     return null;
   }
@@ -31,16 +32,85 @@ function resolveDashboardFile(pathname: string): string | null {
   const safePath = normalize(relativePath).replace(/^(\.\.[/\\])+/, "");
 
   if (safePath === "." || safePath === "") {
-    return join(DASHBOARD_BUILD_DIR, "index.html");
+    return "index.html";
   }
 
-  const filePath = join(DASHBOARD_BUILD_DIR, safePath);
+  if (safePath.includes("..")) {
+    return null;
+  }
+
+  return safePath.replace(/\\/g, "/");
+}
+
+function resolveFilesystemDashboardFile(relativePath: string): string | null {
+  const filePath = join(DASHBOARD_BUILD_DIR, relativePath);
 
   if (!filePath.startsWith(DASHBOARD_BUILD_DIR)) {
     return null;
   }
 
   return filePath;
+}
+
+function resolveEmbeddedDashboardPath(relativePath: string): string | null {
+  if (DASHBOARD_ASSETS[relativePath]) {
+    return DASHBOARD_ASSETS[relativePath]!;
+  }
+
+  return DASHBOARD_ASSETS["index.html"] ?? null;
+}
+
+function isDashboardAvailable(): boolean {
+  if (DASHBOARD_EMBEDDED) {
+    return Object.keys(DASHBOARD_ASSETS).length > 0;
+  }
+
+  return existsSync(DASHBOARD_BUILD_DIR);
+}
+
+function readDashboardFile(
+  relativePath: string,
+): { body: Buffer; mimePath: string } | null {
+  if (DASHBOARD_EMBEDDED) {
+    let embeddedPath = resolveEmbeddedDashboardPath(relativePath);
+    if (!embeddedPath) {
+      return null;
+    }
+
+    try {
+      const body = readFileSync(embeddedPath);
+      const mimePath = DASHBOARD_ASSETS[relativePath] ? relativePath : "index.html";
+      return { body, mimePath };
+    } catch {
+      embeddedPath = DASHBOARD_ASSETS["index.html"] ?? null;
+      if (!embeddedPath) {
+        return null;
+      }
+
+      return {
+        body: readFileSync(embeddedPath),
+        mimePath: "index.html",
+      };
+    }
+  }
+
+  let filePath = resolveFilesystemDashboardFile(relativePath);
+  if (!filePath) {
+    return null;
+  }
+
+  if (!existsSync(filePath) || statSync(filePath).isDirectory()) {
+    filePath = join(DASHBOARD_BUILD_DIR, "index.html");
+  }
+
+  if (!existsSync(filePath)) {
+    return null;
+  }
+
+  return {
+    body: readFileSync(filePath),
+    mimePath: filePath,
+  };
 }
 
 export function handleDashboardRequest(
@@ -61,34 +131,28 @@ export function handleDashboardRequest(
     return new Response("Method Not Allowed", { status: 405 });
   }
 
-  if (!existsSync(DASHBOARD_BUILD_DIR)) {
+  if (!isDashboardAvailable()) {
     logger.warn("Dashboard build not found at dashboard/build — run `bun run dashboard:build`");
     return new Response("Dashboard not built", { status: 503 });
   }
 
-  const filePath = resolveDashboardFile(url.pathname);
-  if (!filePath) {
+  const relativePath = resolveDashboardRelativePath(url.pathname);
+  if (!relativePath) {
     return new Response("Not found", { status: 404 });
   }
 
-  let resolvedPath = filePath;
-
-  if (!existsSync(resolvedPath) || statSync(resolvedPath).isDirectory()) {
-    resolvedPath = join(DASHBOARD_BUILD_DIR, "index.html");
-  }
-
-  if (!existsSync(resolvedPath)) {
+  const file = readDashboardFile(relativePath);
+  if (!file) {
     return new Response("Not found", { status: 404 });
   }
 
-  const body = readFileSync(resolvedPath);
   const headers = new Headers({
-    "Content-Type": getMimeType(resolvedPath),
+    "Content-Type": getMimeType(file.mimePath),
   });
 
   if (request.method === "HEAD") {
     return new Response(null, { status: 200, headers });
   }
 
-  return new Response(body, { status: 200, headers });
+  return new Response(file.body, { status: 200, headers });
 }

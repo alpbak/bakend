@@ -24,7 +24,12 @@
     "lint": "echo 'Lint not configured yet'",
     "dashboard:dev": "cd dashboard && bun run dev",
     "dashboard:build": "cd dashboard && bun run build",
-    "dashboard:check": "cd dashboard && bun run check"
+    "dashboard:check": "cd dashboard && bun run check",
+    "build": "bun run scripts/build.ts",
+    "build:linux-x64": "bun run scripts/build.ts --target bun-linux-x64",
+    "build:linux-arm64": "bun run scripts/build.ts --target bun-linux-arm64",
+    "build:darwin-arm64": "bun run scripts/build.ts --target bun-darwin-arm64",
+    "build:darwin-x64": "bun run scripts/build.ts --target bun-darwin-x64"
   },
   "dependencies": {
     "@bakend/client": "workspace:*"

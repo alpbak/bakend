@@ -1,0 +1,11 @@
+services:
+  bakend:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/data
+    environment:
+      BAKEND_AUTH_JWT_SECRET: ${BAKEND_AUTH_JWT_SECRET:-change-me-in-production}
+      BAKEND_DASHBOARD_ENABLED: "true"
+    restart: unless-stopped

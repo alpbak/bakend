@@ -1,0 +1,135 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: bun-linux-x64
+            asset_os: linux
+            asset_arch: x64
+          - os: ubuntu-latest
+            target: bun-linux-arm64
+            asset_os: linux
+            asset_arch: arm64
+          - os: macos-latest
+            target: bun-darwin-arm64
+            asset_os: darwin
+            asset_arch: arm64
+          - os: macos-latest
+            target: bun-darwin-x64
+            asset_os: darwin
+            asset_arch: x64
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: latest
+
+      - run: bun install
+      - run: cd dashboard && bun install
+
+      - name: Build binary
+        run: bun run scripts/build.ts --target ${{ matrix.target }}
+
+      - name: Package release archive
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          archive="bakend-v${version}-${{ matrix.asset_os }}-${{ matrix.asset_arch }}.tar.gz"
+          mkdir -p release
+          cp dist/bak release/bak
+          cp LICENSE release/
+          cp bakend.json.example release/
+          tar -czf "release/${archive}" -C release bak LICENSE bakend.json.example
+          sha256sum "release/${archive}" > "release/${archive}.sha256"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bakend-${{ matrix.asset_os }}-${{ matrix.asset_arch }}
+          path: release/*
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+
+  smoke-test:
+    name: Smoke test binary
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: bakend-linux-x64
+          path: release
+
+      - name: Start server and verify
+        run: |
+          archive=$(ls release/bakend-v*-linux-x64.tar.gz)
+          tar -xzf "$archive" -C release
+          mkdir -p data
+          cat > data/bakend.json << 'EOF'
+          {
+            "port": 18080,
+            "database": "./bakend.db",
+            "storage": "./storage",
+            "logLevel": "ERROR",
+            "dashboard": { "enabled": true }
+          }
+          EOF
+          chmod +x release/bak
+          cd data
+          ../release/bak start --config bakend.json &
+          pid=$!
+          sleep 3
+          curl -fsS http://localhost:18080/health
+          status=$(curl -fsS -o /dev/null -w "%{http_code}" http://localhost:18080/_/)
+          test "$status" = "200"
+          kill -TERM $pid
+          wait $pid || true
+
+  docker:
+    name: Build and push Docker image
+    needs: smoke-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            ghcr.io/${{ github.repository }}:latest

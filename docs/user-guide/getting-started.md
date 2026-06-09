@@ -1,5 +1,11 @@
 # Getting Started
 
+## Production Deployment
+
+For VPS or Docker deployment with the compiled binary, see [Deployment](deployment.md).
+
+## Development Setup
+
 Install [Bun](https://bun.sh), clone the repository, and install dependencies:
 
 ```bash
