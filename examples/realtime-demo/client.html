@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bakend Realtime Demo</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 720px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      #log {
+        background: #111;
+        color: #0f0;
+        padding: 1rem;
+        min-height: 200px;
+        font-family: monospace;
+        white-space: pre-wrap;
+      }
+      button {
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Bakend Realtime Demo</h1>
+    <p>Connects to <code>ws://localhost:8080/api/realtime</code> and subscribes to <code>posts.*</code>.</p>
+    <button id="connect">Connect</button>
+    <button id="create" disabled>Create Post</button>
+    <div id="log"></div>
+
+    <script>
+      const logEl = document.getElementById("log");
+      const connectBtn = document.getElementById("connect");
+      const createBtn = document.getElementById("create");
+      let ws;
+
+      function log(message) {
+        logEl.textContent += message + "\n";
+      }
+
+      connectBtn.addEventListener("click", () => {
+        ws = new WebSocket("ws://localhost:8080/api/realtime");
+
+        ws.onopen = () => {
+          log("connected");
+          ws.send(JSON.stringify({ action: "subscribe", channel: "posts.*" }));
+          createBtn.disabled = false;
+        };
+
+        ws.onmessage = (event) => {
+          log(event.data);
+        };
+
+        ws.onerror = () => log("connection error");
+        ws.onclose = () => log("disconnected");
+      });
+
+      createBtn.addEventListener("click", async () => {
+        const response = await fetch("http://localhost:8080/api/posts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: "Hello from realtime demo" }),
+        });
+        const record = await response.json();
+        log("created via REST: " + JSON.stringify(record));
+      });
+    </script>
+  </body>
+</html>

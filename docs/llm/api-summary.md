@@ -1,6 +1,6 @@
 # API Summary
 
-> Status: CRUD (Milestone 4), Authentication (Milestone 7), and Storage (Milestone 8) implemented. Realtime planned for Milestone 9.
+> Status: CRUD (Milestone 4), Authentication (Milestone 7), Storage (Milestone 8), and Realtime (Milestone 9) implemented.
 
 ## REST API (Milestone 4)
 
@@ -37,15 +37,24 @@ Upload response: `{ id, filename, mimeType, size, visibility, userId, createdAt 
 
 Full specification: `docs/api/storage.md`
 
-## WebSocket (Milestone 9)
+## WebSocket (Milestone 9 — implemented)
 
-Connect to `/api/realtime` and subscribe to channels:
+```text
+WS /api/realtime?token=<jwt>
+```
 
-- `{collection}.created`
-- `{collection}.updated`
-- `{collection}.deleted`
-- `auth.login`
-- System events
+Client messages: `{ "action": "subscribe"|"unsubscribe"|"ping", "channel": "..." }`
+
+Channels (all Event Bus types):
+
+- `{collection}.created|updated|deleted` (wildcard: `{collection}.*`)
+- `auth.login|logout|register`
+- `storage.uploaded|deleted`
+- `function.started|completed|failed`
+- `job.started|completed|failed`
+- `system.collection.created`
+
+Collection events are filtered by `read` permission. Full spec: `docs/api/websocket-api.md`
 
 ## Response Format
 

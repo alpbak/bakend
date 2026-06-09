@@ -63,15 +63,13 @@ If `source` is omitted, it defaults to `"system"`.
 
 Handler failures are logged and isolated. A failing handler does not prevent other handlers from running, and does not crash Bakend.
 
+## Realtime (Milestone 9)
+
+Clients subscribe to Event Bus channels over WebSocket at `/api/realtime`. Wildcard subscriptions (`posts.*`) are supported. See [Realtime](./realtime.md).
+
 ## What Is Not Available Yet
 
 | Feature | Milestone |
 |---------|-----------|
-| Collection schema events (`system.collection.created`) | 3 (implemented) |
-| Record CRUD events (`users.created` on CRUD) | 4 (implemented) |
-| Function triggers (`onCreate("users")`) | 5 (implemented) |
-| Realtime WebSocket fan-out | 9 |
-| Wildcard subscriptions (`users.*`) | 9 |
 | Persistent event log | Post-1.0 |
-
-The Event Bus is internal infrastructure. There is no public HTTP API for events in v0.1.
+| Per-record realtime channels | Post-1.0 |

@@ -111,6 +111,54 @@ describe("createEventBus", () => {
     expect(callCount).toBe(1);
   });
 
+  test("onAny receives every emitted event", () => {
+    const logger = createLogger("ERROR");
+    const eventBus = createEventBus(logger);
+    const received: string[] = [];
+
+    eventBus.onAny((event) => {
+      received.push(event.type);
+    });
+
+    eventBus.emit("users.created");
+    eventBus.emit("posts.updated");
+
+    expect(received).toEqual(["users.created", "posts.updated"]);
+  });
+
+  test("onAny runs before type-specific handlers", () => {
+    const logger = createLogger("ERROR");
+    const eventBus = createEventBus(logger);
+    const order: string[] = [];
+
+    eventBus.onAny(() => {
+      order.push("any");
+    });
+    eventBus.on("users.created", () => {
+      order.push("typed");
+    });
+
+    eventBus.emit("users.created");
+
+    expect(order).toEqual(["any", "typed"]);
+  });
+
+  test("onAny unsubscribe stops delivery", () => {
+    const logger = createLogger("ERROR");
+    const eventBus = createEventBus(logger);
+    let callCount = 0;
+
+    const unsubscribe = eventBus.onAny(() => {
+      callCount += 1;
+    });
+
+    eventBus.emit("users.created");
+    unsubscribe();
+    eventBus.emit("users.created");
+
+    expect(callCount).toBe(1);
+  });
+
   test("defaults source to system when omitted", () => {
     const logger = createLogger("ERROR");
     const eventBus = createEventBus(logger);

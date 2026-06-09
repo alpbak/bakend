@@ -280,12 +280,13 @@ Responsibilities:
 - User updates
 - System events
 
-Example:
+Example channels:
 
 ```text
-users:create
-users:update
-users:delete
+users.created
+users.updated
+users.deleted
+users.*
 ```
 
 ---

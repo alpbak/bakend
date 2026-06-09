@@ -8,6 +8,7 @@ import { createRecordStore } from "../../src/core/collections/record-store.ts";
 import { DEFAULT_CONFIG } from "../../src/core/config/defaults.ts";
 import { createEventBus } from "../../src/core/events/create-event-bus.ts";
 import { createLogger } from "../../src/core/logging/logger.ts";
+import { createRealtimeEngine } from "../../src/core/realtime/create-realtime-engine.ts";
 import { createServer } from "../../src/core/server/create-server.ts";
 import { createTestStorage } from "./test-storage.ts";
 
@@ -80,7 +81,25 @@ export function createTestServer() {
     config,
   });
 
-  const server = createServer(config, logger, { collections, recordStore, auth, storage });
+  const realtime = createRealtimeEngine({ eventBus, collections, logger });
+  const server = createServer(config, logger, {
+    collections,
+    recordStore,
+    auth,
+    storage,
+    realtime,
+  });
 
-  return { db, server, eventBus, collections, recordStore, auth, storage, config, storageRoot };
+  return {
+    db,
+    server,
+    eventBus,
+    collections,
+    recordStore,
+    auth,
+    storage,
+    realtime,
+    config,
+    storageRoot,
+  };
 }

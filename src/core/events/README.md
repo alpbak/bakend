@@ -25,13 +25,12 @@ eventBus.emit("users.created", {
 
 - `BakendEvent` schema per [RFC-0000](../../../docs/rfcs/RFC-0000-Event-Bus-and-Execution-Model.md)
 - `on()` registration with unsubscribe
+- `onAny()` receives every emitted event (used by realtime fan-out)
 - `emit()` publishing (non-blocking for async handlers)
 - Automatic DEBUG logging on every emitted event
 - Isolated error handling (handler failures never crash the process)
 
 ## Deferred
 
-- Wildcard subscriptions (`users.*`)
 - Event persistence
 - Handler priority tiers (logging → realtime → functions → plugins)
-- Collection, function, job, and realtime integrations

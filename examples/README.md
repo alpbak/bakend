@@ -8,5 +8,6 @@ Sample Bakend projects and tutorials.
 | `jobs-demo/` | Scheduled heartbeat job (`*/1 * * * *`) |
 | `auth-demo/` | Registration, login, and collection permissions |
 | `storage-demo/` | File upload, download, and `file` collection fields |
+| `realtime-demo/` | WebSocket subscriptions for live collection events |
 
 **Milestone:** 13 — Beta Release

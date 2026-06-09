@@ -112,9 +112,17 @@ Use the returned `token` as `Authorization: Bearer <token>` on protected collect
 
 ## 7. Subscribe to Realtime
 
-> Planned — Milestone 9
+Connect via WebSocket and subscribe to `posts.created` events:
 
-Connect via WebSocket and subscribe to `posts.created` events.
+```text
+ws://localhost:8080/api/realtime
+```
+
+```json
+{ "action": "subscribe", "channel": "posts.created" }
+```
+
+See `docs/user-guide/realtime.md` and `examples/realtime-demo/`.
 
 ## Development Reading Order
 

@@ -17,6 +17,7 @@ export interface EmitOptions {
 
 export interface EventBus {
   on(type: string, handler: EventHandler): UnsubscribeFn;
+  onAny(handler: EventHandler): UnsubscribeFn;
   emit(type: string, options?: EmitOptions): void;
   flush(): Promise<void>;
 }

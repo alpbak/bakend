@@ -33,6 +33,7 @@ function invokeHandler(handler: EventHandler, event: BakendEvent, logger: Logger
 
 export function createEventBus(logger: Logger): EventBus {
   const handlers = new Map<string, EventHandler[]>();
+  const anyHandlers: EventHandler[] = [];
   const pending = new Set<Promise<void>>();
 
   function track(promise: Promise<void>): void {
@@ -67,6 +68,17 @@ export function createEventBus(logger: Logger): EventBus {
       };
     },
 
+    onAny(handler) {
+      anyHandlers.push(handler);
+
+      return () => {
+        const index = anyHandlers.indexOf(handler);
+        if (index !== -1) {
+          anyHandlers.splice(index, 1);
+        }
+      };
+    },
+
     emit(type, options: EmitOptions = {}) {
       const event: BakendEvent = {
         id: createEventId(),
@@ -77,6 +89,13 @@ export function createEventBus(logger: Logger): EventBus {
       };
 
       logger.debug(`Event emitted: ${event.type} (${event.id})`);
+
+      for (const handler of anyHandlers) {
+        const result = invokeHandler(handler, event, logger);
+        if (result) {
+          track(result);
+        }
+      }
 
       const typeHandlers = handlers.get(type) ?? [];
       for (const handler of typeHandlers) {

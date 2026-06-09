@@ -6,6 +6,13 @@ All notable changes to Bakend are documented in this file.
 
 ### Added
 
+- Milestone 9 Realtime: WebSocket server at `/api/realtime`, subscribe/unsubscribe protocol, wildcard channels (`posts.*`), JWT auth via header or `?token=`, collection read-permission filtering.
+- Event Bus `onAny()` for realtime fan-out (runs before type-specific handlers).
+- API documentation: `docs/api/websocket-api.md`.
+- User guide: `docs/user-guide/realtime.md`.
+- LLM reference: `docs/llm/realtime.md`.
+- RFC-0006 Implementation section.
+- Example: `examples/realtime-demo/`.
 - Milestone 8 Storage: local filesystem storage, authenticated uploads, public/protected download ACLs, file metadata in `_files` table (schema version `3`).
 - Storage endpoints: `POST /api/storage/upload`, `GET /api/storage/:id`, `DELETE /api/storage/:id`.
 - Collection `file` field validation against `_files.id`.

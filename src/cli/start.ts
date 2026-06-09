@@ -21,6 +21,8 @@ import type { StorageEngine } from "../core/storage/types.ts";
 import { getAdminEmailFromEnv } from "../core/config/load.ts";
 import { createJobsEngine } from "../core/jobs/create-jobs-engine.ts";
 import type { JobsEngine } from "../core/jobs/types.ts";
+import { createRealtimeEngine } from "../core/realtime/create-realtime-engine.ts";
+import type { RealtimeEngine } from "../core/realtime/types.ts";
 import { createServer } from "../core/server/create-server.ts";
 import type { BakendServer } from "../core/server/create-server.ts";
 import { VERSION_DISPLAY } from "../version.ts";
@@ -40,6 +42,7 @@ export interface StartResult {
   storage: StorageEngine;
   functions: FunctionsEngine;
   jobs: JobsEngine;
+  realtime: RealtimeEngine;
   shutdown: () => void;
 }
 
@@ -99,7 +102,14 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
   });
   await jobs.load();
 
-  const server = createServer(config, logger, { collections, recordStore, auth, storage });
+  const realtime = createRealtimeEngine({ eventBus, collections, logger });
+  const server = createServer(config, logger, {
+    collections,
+    recordStore,
+    auth,
+    storage,
+    realtime,
+  });
 
   printStartupBanner(server.port);
 
@@ -114,6 +124,7 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
     logger.info("Shutting down");
     jobs.shutdown();
     functions.shutdown();
+    realtime.shutdown();
     server.stop();
     closeDatabase(db);
   };
@@ -137,6 +148,7 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
     storage,
     functions,
     jobs,
+    realtime,
     shutdown,
   };
 }
