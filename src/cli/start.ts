@@ -1,7 +1,6 @@
 import type { Database } from "bun:sqlite";
-import { dirname, join, resolve } from "node:path";
-import { loadConfig } from "../core/config/load.ts";
-import { DEFAULT_CONFIG_PATH } from "../core/config/defaults.ts";
+import { join } from "node:path";
+import { loadProjectConfig } from "../core/config/load-project.ts";
 import type { LoadConfigOptions } from "../core/config/types.ts";
 import { createCollectionsEngine } from "../core/collections/create-collections-engine.ts";
 import { loadCollectionDefinitions } from "../core/collections/load-definitions.ts";
@@ -12,6 +11,7 @@ import { closeDatabase, initDatabase } from "../core/database/init.ts";
 import { createEventBus } from "../core/events/create-event-bus.ts";
 import type { EventBus } from "../core/events/types.ts";
 import { createLogger } from "../core/logging/logger.ts";
+import { warnIfInsecureProductionConfig } from "./security-check.ts";
 import { createFunctionsEngine } from "../core/functions/create-functions-engine.ts";
 import type { FunctionsEngine } from "../core/functions/types.ts";
 import { createAuthEngine } from "../core/auth/create-auth-engine.ts";
@@ -32,7 +32,7 @@ export interface StartOptions extends LoadConfigOptions {
 }
 
 export interface StartResult {
-  config: ReturnType<typeof loadConfig>;
+  config: ReturnType<typeof loadProjectConfig>["config"];
   db: Database;
   server: BakendServer;
   eventBus: EventBus;
@@ -56,16 +56,14 @@ export function printStartupBanner(port: number): void {
 }
 
 export async function start(options: StartOptions = {}): Promise<StartResult> {
-  const configPath = resolve(options.configPath ?? DEFAULT_CONFIG_PATH);
-  const config = loadConfig({ ...options, configPath });
-  const logger = createLogger(config.logLevel);
+  const { configPath, projectDir, config } = loadProjectConfig(options);
+  warnIfInsecureProductionConfig(config);
+  const logger = createLogger(config.logLevel, 500, config.logFile);
   const eventBus = createEventBus(logger);
   const db = initDatabase(config, logger);
   const storage = createStorageEngine({ db, config, logger, eventBus });
   const collections = createCollectionsEngine({ db, logger, eventBus, storage });
   const recordStore = createRecordStore({ db, collections, logger, eventBus });
-
-  const projectDir = dirname(configPath);
   const collectionsDir = join(projectDir, "collections");
   const functionsDir = join(projectDir, "functions");
   const jobsDir = join(projectDir, "jobs");

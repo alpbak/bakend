@@ -70,6 +70,7 @@ function validateConfig(raw: Record<string, unknown>): BakendConfig {
   const database = raw.database ?? DEFAULT_CONFIG.database;
   const storage = raw.storage ?? DEFAULT_CONFIG.storage;
   const logLevel = raw.logLevel ?? DEFAULT_CONFIG.logLevel;
+  const logFile = raw.logFile;
 
   if (typeof port !== "number" || !Number.isInteger(port) || port < 1 || port > 65535) {
     throw new Error(`Invalid config: port must be an integer between 1 and 65535, got ${String(port)}`);
@@ -87,11 +88,16 @@ function validateConfig(raw: Record<string, unknown>): BakendConfig {
     throw new Error(`Invalid config: logLevel must be one of ${LOG_LEVELS.join(", ")}`);
   }
 
+  if (logFile !== undefined && (typeof logFile !== "string" || logFile.trim().length === 0)) {
+    throw new Error("Invalid config: logFile must be a non-empty string when set");
+  }
+
   return {
     port,
     database,
     storage,
     logLevel,
+    logFile: typeof logFile === "string" ? logFile : undefined,
     auth: validateAuthConfig(raw.auth),
     dashboard: validateDashboardConfig(raw.dashboard),
   };
@@ -125,6 +131,14 @@ function applyEnvOverrides(config: BakendConfig): BakendConfig {
       throw new Error(`Invalid BAKEND_LOG_LEVEL environment variable: ${logLevel}`);
     }
     next.logLevel = logLevel;
+  }
+
+  const logFile = process.env.BAKEND_LOG_FILE;
+  if (logFile !== undefined) {
+    if (logFile.trim().length === 0) {
+      throw new Error("Invalid BAKEND_LOG_FILE environment variable: must be non-empty");
+    }
+    next.logFile = logFile;
   }
 
   const jwtSecret = process.env.BAKEND_AUTH_JWT_SECRET;

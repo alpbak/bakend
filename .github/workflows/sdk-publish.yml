@@ -1,0 +1,73 @@
+name: SDK Publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  npm:
+    name: Publish @bakend/client to npm
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Sync SDK version with release tag
+        if: github.event_name == 'release'
+        working-directory: sdk/javascript
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          npm version "$version" --no-git-tag-version --allow-same-version
+
+      - name: Build JavaScript SDK
+        working-directory: sdk/javascript
+        run: |
+          npm install typescript --no-save
+          npm run build
+
+      - name: Publish to npm
+        working-directory: sdk/javascript
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
+        continue-on-error: true
+
+  pubdev:
+    name: Publish bakend to pub.dev
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Sync SDK version with release tag
+        if: github.event_name == 'release'
+        working-directory: sdk/dart
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          sed -i "s/^version: .*/version: ${version}/" pubspec.yaml
+
+      - name: Dry run publish
+        working-directory: sdk/dart
+        run: dart pub publish --dry-run
+
+      - name: Publish to pub.dev
+        working-directory: sdk/dart
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+        run: dart pub publish --force
+        continue-on-error: true

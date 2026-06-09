@@ -369,10 +369,15 @@ Included:
 - Jobs
 - Dashboard
 - SDKs
+- `bak init` and operator CLI (`migrate`, `backup`, `functions`, `jobs`)
+- Hosted install script
+- SDK publishing (npm, pub.dev)
 
 Success Criteria:
 
 Bakend delivers its full vision.
+
+Status: **Complete** (v1.0.0 — 2026-06-09)
 
 ---
 
@@ -380,12 +385,13 @@ Bakend delivers its full vision.
 
 Potential post-1.0 milestones:
 
-- Plugin system
+- Plugin system (RFC-0015)
 - OAuth providers
-- S3 adapters
-- R2 adapters
+- S3 / R2 adapters
 - PostgreSQL adapter
-- Backup system
-- Monitoring system
+- Monitoring / metrics system
+- Persistent event log
+- Per-record realtime channels
+- Windows binary builds
 
 These are intentionally deferred until after Version 1.0.

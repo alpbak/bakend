@@ -4,12 +4,25 @@ All notable changes to Bakend are documented in this file.
 
 ## [Unreleased]
 
+## [1.0.0] — 2026-06-09
+
 ### Added
 
-- Website: hosted documentation section rendering `docs/` and `tutorials/` on GitHub Pages.
-- Website: docs layout with sidebar navigation, table of contents, and prev/next pager.
-- Website: light and dark theme toggle.
-- CI: website deploy workflow triggers on `docs/**` and `tutorials/**` changes.
+- Milestone 14 Version 1.0: production-ready release.
+- CLI: `bak init` project scaffolding with generated JWT secret (RFC-0008).
+- CLI: `bak functions list`, `bak jobs list`, `bak jobs runs <name>`.
+- CLI: `bak migrate status|apply|export` (RFC-0012).
+- CLI: `bak backup create|restore` (RFC-0014).
+- CLI: `bak storage prune` for orphan file cleanup.
+- Config: `logFile` / `BAKEND_LOG_FILE` append-only file logging with rotation (RFC-0013).
+- Config: project paths (`database`, `storage`, `logFile`) resolved relative to `bakend.json`.
+- Security: production warning when `BAKEND_ENV=production` and JWT secret is a demo value (RFC-0016).
+- Website: hosted `install.sh` at `https://alpbak.github.io/bakend/install.sh`.
+- SDK: `@bakend/client` npm build pipeline; `bakend` pub.dev publish workflow.
+- SDK: WebSocket auto-reconnect with exponential backoff.
+- RFCs: RFC-0012, RFC-0013, RFC-0014, RFC-0016, RFC-0017.
+- CI: `bak init` smoke test; SDK build in pipeline.
+- Documentation: production checklist, CLI reference, getting-started `bak init` flow.
 
 ## [0.1.0-beta] — 2026-06-09
 

@@ -16,6 +16,16 @@ For deployment on a VPS (systemd, Docker, upgrades), see [Deployment](deployment
 - [Bun](https://bun.sh) 1.1+
 - Git
 
+## One-liner install
+
+Hosted install script (GitHub Pages):
+
+```bash
+curl -fsSL https://alpbak.github.io/bakend/install.sh | sudo sh
+```
+
+Optional custom domain: point `bakend.dev` DNS to GitHub Pages and use the same path (`/install.sh`).
+
 ## Install from GitHub Releases
 
 Download the archive for your platform from [GitHub Releases](https://github.com/alpbak/bakend/releases):
@@ -30,17 +40,15 @@ bakend-v{version}-darwin-x64.tar.gz
 Extract and verify:
 
 ```bash
-tar -xzf bakend-v0.1.0-beta-linux-x64.tar.gz
-sha256sum -c bakend-v0.1.0-beta-linux-x64.tar.gz.sha256
+tar -xzf bakend-v1.0.0-linux-x64.tar.gz
+sha256sum -c bakend-v1.0.0-linux-x64.tar.gz.sha256
 sudo install -m 755 bak /usr/local/bin/bak
 bak version
 ```
 
 Each archive contains `bak`, `LICENSE`, and `bakend.json.example`.
 
-## Install script
-
-From a cloned repository or downloaded `install.sh`:
+## Install script (from repository)
 
 ```bash
 # Latest release (uses bakend-latest-{os}-{arch}.tar.gz alias on GitHub Releases)
@@ -50,19 +58,21 @@ sudo sh scripts/install.sh
 Install a specific version:
 
 ```bash
-sudo BAKEND_VERSION=0.1.0-beta sh scripts/install.sh
-```
-
-Install from a direct URL:
-
-```bash
-sudo BAKEND_INSTALL_URL=https://github.com/alpbak/bakend/releases/download/v0.1.0-beta/bakend-v0.1.0-beta-linux-x64.tar.gz sh scripts/install.sh
+sudo BAKEND_VERSION=1.0.0 sh scripts/install.sh
 ```
 
 Optional systemd unit (requires repo checkout with `packaging/systemd/bakend.service`):
 
 ```bash
 sudo BAKEND_INSTALL_SYSTEMD=1 sh scripts/install.sh
+```
+
+## Scaffold a project
+
+```bash
+bak init myapp
+cd myapp
+bak start
 ```
 
 ## Docker
@@ -73,27 +83,25 @@ Pull the image from GitHub Container Registry:
 docker pull ghcr.io/alpbak/bakend:latest
 ```
 
-See [Deployment](deployment.md#docker) for volume mounts and `docker-compose`.
+See [Deployment](deployment.md) for `docker-compose` and volume mounts.
 
 ## Development install
-
-Clone the repository and install dependencies:
 
 ```bash
 git clone https://github.com/alpbak/bakend.git
 cd bakend
 bun install
-cp bakend.json.example bakend.json
-bun run start
+bun run src/index.ts init myapp
 ```
 
-See [Getting Started](getting-started.md) for configuration and first steps.
-
-## Verify installation
+## SDKs
 
 ```bash
-bak version
-curl http://localhost:8080/health
+npm install @bakend/client
 ```
 
-Open the admin dashboard at [http://localhost:8080/_/](http://localhost:8080/_/) when `dashboard.enabled` is true (default).
+```bash
+dart pub add bakend
+```
+
+See [SDK guide](sdk.md).

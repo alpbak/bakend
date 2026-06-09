@@ -10,22 +10,20 @@ Bakend began as a private framework, rewritten for open source. [Why Bakend exis
 
 ## Status
 
-**v0.1 beta** — SQLite, collections, REST API, auth, storage, realtime, functions, jobs, dashboard, SDKs, and single-binary deployment.
+**v1.0** — SQLite, collections, REST API, auth, storage, realtime, functions, jobs, dashboard, SDKs, CLI tooling, and single-binary deployment.
 
 ## Quick start
 
 ### Production (binary)
 
-Download from [GitHub Releases](https://github.com/alpbak/bakend/releases) or use the install script:
-
 ```bash
-git clone https://github.com/alpbak/bakend.git
-cd bakend
-sudo sh scripts/install.sh
-bak version
+curl -fsSL https://alpbak.github.io/bakend/install.sh | sudo sh
+bak init myapp
+cd myapp
+bak start
 ```
 
-See [Installation](docs/user-guide/installation.md) for platform-specific archives and Docker.
+Download archives from [GitHub Releases](https://github.com/alpbak/bakend/releases) or see [Installation](docs/user-guide/installation.md) for Docker and platform-specific details.
 
 ### Development
 
@@ -33,8 +31,9 @@ See [Installation](docs/user-guide/installation.md) for platform-specific archiv
 git clone https://github.com/alpbak/bakend.git
 cd bakend
 bun install
-cp bakend.json.example bakend.json
-bun run start
+bun run src/index.ts init myapp
+cd myapp
+bun run ../src/index.ts start
 ```
 
 Open [http://localhost:8080/health](http://localhost:8080/health) and the [admin dashboard](http://localhost:8080/_/).

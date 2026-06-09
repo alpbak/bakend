@@ -56,6 +56,13 @@ jobs:
         with:
           bun-version: latest
       - run: bun install
+      - run: bun run sdk:build
+      - name: bak init smoke test
+        run: |
+          tmpdir="$(mktemp -d)"
+          cd "$tmpdir"
+          bun run "$GITHUB_WORKSPACE/src/index.ts" init smokeapp
+          test -f smokeapp/bakend.json
       - run: bun test
 
   dashboard:
@@ -100,3 +107,4 @@ jobs:
           bun install
           bun run build
       - run: test -d website/dist
+      - run: test -f website/dist/install.sh

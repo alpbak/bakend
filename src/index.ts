@@ -1,71 +1,38 @@
 #!/usr/bin/env bun
 
+import { parseArgs } from "./cli/args.ts";
+import { backupCreate, backupRestore } from "./cli/backup.ts";
+import { functionsList } from "./cli/functions-cmd.ts";
+import { initProject } from "./cli/init.ts";
+import { jobsList, jobsRuns } from "./cli/jobs-cmd.ts";
+import {
+  migrateApply,
+  migrateExport,
+  migrateStatus,
+  printMigrateStatus,
+} from "./cli/migrate.ts";
+import { openProject } from "./cli/project-context.ts";
+import { printStoragePruneResult, storagePrune } from "./cli/storage-cmd.ts";
 import { start } from "./cli/start.ts";
+import { printUsage } from "./cli/usage.ts";
 import { VERSION } from "./version.ts";
-
-function printUsage(): void {
-  console.log(`Bakend — PocketBase + Functions + Jobs
-
-Usage:
-  bak start [--config <path>] [--watch]   Start the Bakend server
-  bak dev [--config <path>]               Start with function and job hot reload
-  bak version                             Print Bakend version
-  bak --help                              Show this help message
-`);
-}
-
-function parseArgs(argv: string[]): {
-  command?: string;
-  configPath?: string;
-  watch: boolean;
-  help: boolean;
-} {
-  const args = argv.slice(2);
-  let command: string | undefined;
-  let configPath: string | undefined;
-  let watch = false;
-  let help = false;
-
-  for (let index = 0; index < args.length; index += 1) {
-    const arg = args[index];
-
-    if (arg === "--help" || arg === "-h") {
-      help = true;
-      continue;
-    }
-
-    if (arg === "--config") {
-      configPath = args[index + 1];
-      if (!configPath) {
-        throw new Error("Missing value for --config");
-      }
-      index += 1;
-      continue;
-    }
-
-    if (arg === "--watch") {
-      watch = true;
-      continue;
-    }
-
-    if (!command) {
-      command = arg;
-      continue;
-    }
-
-    throw new Error(`Unknown argument: ${arg}`);
-  }
-
-  return { command, configPath, watch, help };
-}
 
 async function main(): Promise<void> {
   try {
-    const { command, configPath, watch, help } = parseArgs(process.argv);
+    const parsed = parseArgs(process.argv);
 
-    if (help || !command) {
+    if (parsed.help || !parsed.command) {
       printUsage();
-      process.exit(help ? 0 : 1);
+      process.exit(parsed.help ? 0 : 1);
+      return;
+    }
+
+    const { command, subcommand, positional, configPath, watch, force, output } = parsed;
+
+    if (command === "init") {
+      const projectName = subcommand && !subcommand.startsWith("-") ? subcommand : positional[0];
+      const projectDir = initProject({ name: projectName });
+      console.log(`Created Bakend project at ${projectDir}`);
       return;
     }
 
@@ -81,6 +48,125 @@ async function main(): Promise<void> {
 
     if (command === "version") {
       console.log(VERSION);
+      return;
+    }
+
+    if (command === "functions") {
+      if (subcommand !== "list") {
+        throw new Error('Usage: bak functions list');
+      }
+
+      const context = await openProject({ configPath, loadJobs: false });
+      try {
+        functionsList(context);
+      } finally {
+        context.close();
+      }
+      return;
+    }
+
+    if (command === "jobs") {
+      const context = await openProject({ configPath, loadFunctions: false });
+
+      try {
+        if (subcommand === "list") {
+          jobsList(context);
+          return;
+        }
+
+        if (subcommand === "runs") {
+          const name = positional[0];
+          if (!name) {
+            throw new Error("Usage: bak jobs runs <name>");
+          }
+          jobsRuns(context, name);
+          return;
+        }
+
+        throw new Error("Usage: bak jobs list | bak jobs runs <name>");
+      } finally {
+        context.close();
+      }
+    }
+
+    if (command === "migrate") {
+      const context = await openProject({
+        configPath,
+        loadFunctions: false,
+        loadJobs: false,
+      });
+
+      try {
+        if (subcommand === "status") {
+          printMigrateStatus(migrateStatus(context));
+          return;
+        }
+
+        if (subcommand === "apply") {
+          const applied = migrateApply(context);
+          if (applied.length === 0) {
+            console.log("No collection changes to apply.");
+          } else {
+            for (const line of applied) {
+              console.log(line);
+            }
+          }
+          return;
+        }
+
+        if (subcommand === "export") {
+          const exported = migrateExport(context);
+          if (exported.length === 0) {
+            console.log("No collections to export.");
+          } else {
+            console.log(`Exported ${exported.length} collection(s): ${exported.join(", ")}`);
+          }
+          return;
+        }
+
+        throw new Error("Usage: bak migrate status | apply | export");
+      } finally {
+        context.close();
+      }
+    }
+
+    if (command === "backup") {
+      if (subcommand === "create") {
+        const archivePath = await backupCreate(configPath ?? "./bakend.json", output);
+        console.log(`Backup created: ${archivePath}`);
+        return;
+      }
+
+      if (subcommand === "restore") {
+        const archive = positional[0];
+        if (!archive) {
+          throw new Error("Usage: bak backup restore <archive> [--force]");
+        }
+        await backupRestore(configPath ?? "./bakend.json", archive, force);
+        console.log("Backup restored.");
+        return;
+      }
+
+      throw new Error("Usage: bak backup create | bak backup restore <archive>");
+    }
+
+    if (command === "storage") {
+      if (subcommand !== "prune") {
+        throw new Error("Usage: bak storage prune");
+      }
+
+      const context = await openProject({
+        configPath,
+        loadFunctions: false,
+        loadJobs: false,
+      });
+
+      try {
+        const removed = await storagePrune(context);
+        printStoragePruneResult(removed);
+      } finally {
+        context.close();
+      }
       return;
     }
 

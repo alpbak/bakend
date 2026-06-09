@@ -83,7 +83,13 @@ Workflow:
 1. Upload via `POST /api/storage/upload`
 2. Create a record referencing the returned `id` in the `file_id` field
 
-Record validation checks that the file ID exists in `_files`. Deleting a record does not delete the file (orphan cleanup deferred).
+Record validation checks that the file ID exists in `_files`. Deleting a record does not delete the file automatically.
+
+Remove orphan files not referenced by any record:
+
+```bash
+bak storage prune
+```
 
 ## Events
 

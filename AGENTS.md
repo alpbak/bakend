@@ -354,7 +354,7 @@ RFC-0018 Versioning and Upgrade Policy
 
 A developer should be able to run:
 
-curl -fsSL https://bakend.dev/install.sh | sh
+curl -fsSL https://alpbak.github.io/bakend/install.sh | sh
 
 bak init myapp
 

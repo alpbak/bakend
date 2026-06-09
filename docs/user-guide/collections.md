@@ -111,11 +111,22 @@ See [REST API](../api/rest-api.md) for the full specification.
 
 Programmatic access is also available via `StartResult.recordStore` after `bak start`.
 
+## Schema sync
+
+Sync `collections/*.json` with the database:
+
+```bash
+bak migrate status
+bak migrate apply
+bak migrate export
+```
+
+See [RFC-0012 Migration Engine](../rfcs/RFC-0012-Migration-Engine.md).
+
 ## What Is Not Available Yet
 
-| Feature | Milestone |
-|---------|-----------|
-| Filtering, sorting, pagination | Post-M4 |
-| Schema changes / migrations | RFC-0012 |
+| Feature | Status |
+|---------|--------|
+| Filtering, sorting, pagination | Planned |
 | Collection permissions | Implemented — see [Authentication](./authentication.md) |
 | File upload for `file` fields | Implemented — see [Storage](./storage.md) |

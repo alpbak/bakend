@@ -27,7 +27,7 @@ Bakend follows [semver](https://semver.org/):
 | **Minor** (0.x.0) | New features, backward-compatible schema migrations | Replace binary; restart; internal migrations run automatically |
 | **Major** (x.0.0) | Breaking changes | Review release notes; may require config or project changes |
 
-Pre-1.0 releases (current): minor versions may include breaking changes. Release notes document any required operator action.
+Bakend 1.0+ follows semver: patch and minor upgrades are backward compatible for project data and config. Major bumps may require operator action documented in release notes.
 
 ## Internal Schema Migration
 
@@ -96,7 +96,7 @@ If upgrade fails:
 3. Restore database backup if schema was partially migrated (rare — migrations are transactional)
 4. Start service
 
-Automated rollback is deferred to RFC-0014 (Backup and Restore).
+Use `bak backup create` before upgrades and `bak backup restore <archive> --force` to roll back (RFC-0014).
 
 ## Downgrade Policy
 
@@ -115,8 +115,8 @@ After upgrade, verify:
 
 - `bak upgrade` command with automatic download
 - `bak upgrade --check` against GitHub Releases API
-- `bak migrate` for user-facing migration CLI (RFC-0012)
+- `bak upgrade` with automatic download from GitHub Releases
 
 ## Status
 
-Draft — Milestone 12
+Implemented — Milestone 14

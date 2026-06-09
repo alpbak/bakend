@@ -20,7 +20,7 @@ Bakend must deploy on VPS environments without requiring Bun, Node.js, or source
 - Automated backup/restore (RFC-0014)
 - Windows builds (deferred; Linux-first for VPS)
 - Embedding user `functions/`, `jobs/`, or `collections/` into the binary
-- Hosted `install.sh` at `bakend.dev` (script provided; hosting deferred)
+- Hosted `install.sh` at `bakend.dev` custom domain (script hosted on GitHub Pages)
 
 ## Deployment Model
 
@@ -161,7 +161,7 @@ See RFC-0018 for versioning policy.
 - Installs binary to `/usr/local/bin/bak`
 - Optionally installs systemd unit
 
-Full hosting at `bakend.dev` is deferred.
+Install script is hosted at `https://alpbak.github.io/bakend/install.sh`. Optional `bakend.dev` DNS alias.
 
 ## CLI Additions
 

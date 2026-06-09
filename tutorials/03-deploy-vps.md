@@ -25,7 +25,8 @@ sudo sh scripts/install.sh
 **Option B — specific version:**
 
 ```bash
-sudo BAKEND_VERSION=0.1.0-beta sh scripts/install.sh
+curl -fsSL https://alpbak.github.io/bakend/install.sh | sudo sh
+# Or: sudo BAKEND_VERSION=1.0.0 sh scripts/install.sh
 ```
 
 Verify:

@@ -1,67 +1,33 @@
 # SDK Summary
 
-> Status: Implemented (Milestone 11)
+> Status: Implemented (Milestone 11) · npm and pub.dev (Milestone 14)
 
 ## Packages
 
-| Language | Package | Path |
-|----------|---------|------|
-| JavaScript / TypeScript | `@bakend/client` | `sdk/javascript/` |
-| Dart / Flutter | `bakend` | `sdk/dart/` |
+| Language | Package | Install |
+|----------|---------|---------|
+| JavaScript / TypeScript | `@bakend/client` | `npm install @bakend/client` |
+| Dart / Flutter | `bakend` | `dart pub add bakend` |
 
-Publishing to npm/pub.dev is planned post-beta (workspace install during v0.1 beta).
+## Surface
 
-## Entry Point
-
-```ts
-const client = new BakendClient("http://localhost:8080");
-```
-
-```dart
-final client = BakendClient('http://localhost:8080');
-```
-
-## Modules
-
-| Module | Covers |
-|--------|--------|
-| `client.auth` | register, login, refresh, logout, getMe |
-| `client.collection(name)` | list, get, create, update, delete |
-| `client.storage` | upload, download, getDownloadUrl, delete |
-| `client.realtime` | subscribe, unsubscribe, disconnect |
-
-## Auth
-
-- Tokens stored in pluggable `AuthStore` (memory default; browser localStorage/sessionStorage in JS)
-- HTTP requests auto-attach `Authorization: Bearer <token>`
-- Realtime uses `?token=<jwt>` query param
-- `autoRefresh: true` (default) retries once on 401 via refresh token
-
-## Errors
-
-- JS: `BakendError` with `code`, `message`, `status`, `details?`
-- Dart: `BakendException` with same fields
+- `BakendClient({ baseUrl, token? })`
+- `auth` — register, login, refresh, logout, getMe
+- `collection(name)` — CRUD
+- `storage` — upload, download, delete
+- `realtime` — subscribe with auto-reconnect
 
 ## Non-Goals (V1)
 
-- Admin API client
-- Pagination / filtering
-- Code-generated collection types
-- Auto WebSocket reconnect
+- Admin API client (`/api/admin/*`)
+- Pagination, filtering, sorting helpers
+- Code-generated per-collection types
 
 ## Tests
 
-```bash
-bun test tests/sdk      # JS integration tests
-bun run test:dart       # Dart integration tests (requires Dart SDK)
-```
+- `tests/sdk/javascript/`
+- `sdk/dart/test/`
 
-## Examples
+## Example
 
-- `examples/sdk-demo/` — Bun script using `@bakend/client`
-
-## Full Docs
-
-- `docs/sdk/javascript.md`
-- `docs/sdk/dart.md`
-- RFC-0009 SDK Design
+`examples/sdk-demo/`

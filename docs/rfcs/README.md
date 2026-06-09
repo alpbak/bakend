@@ -14,22 +14,22 @@ RFC numbers are permanent and must never be reused.
 | [RFC-0005](RFC-0005-Authentication-and-Permissions.md) | Authentication and Permissions | Draft |
 | [RFC-0006](RFC-0006-Realtime-Engine.md) | Realtime Engine | Stub |
 | [RFC-0007](RFC-0007-Storage-System.md) | Storage System | Stub |
-| [RFC-0008](RFC-0008-CLI-and-Project-Structure.md) | CLI and Project Structure | Stub |
+| [RFC-0008](RFC-0008-CLI-and-Project-Structure.md) | CLI and Project Structure | Draft |
 | [RFC-0009](RFC-0009-SDK-Design.md) | SDK Design | Draft |
 | [RFC-0010](RFC-0010-Packaging-and-Deployment.md) | Packaging and Deployment | Draft |
 | [RFC-0011](RFC-0011-Admin-Dashboard.md) | Admin Dashboard | Draft |
+| [RFC-0012](RFC-0012-Migration-Engine.md) | Migration Engine | Draft |
+| [RFC-0013](RFC-0013-Logging-and-Observability.md) | Logging and Observability | Draft |
+| [RFC-0014](RFC-0014-Backup-and-Restore.md) | Backup and Restore | Draft |
+| [RFC-0016](RFC-0016-Security-Model.md) | Security Model | Draft |
+| [RFC-0017](RFC-0017-Testing-Strategy.md) | Testing Strategy | Draft |
 | [RFC-0018](RFC-0018-Versioning-and-Upgrade-Policy.md) | Versioning and Upgrade Policy | Draft |
 
 ## Reserved RFC Numbers
 
 | RFC | Title |
 |---|---|
-| RFC-0012 | Migration Engine |
-| RFC-0013 | Logging and Observability |
-| RFC-0014 | Backup and Restore |
 | RFC-0015 | Plugin System |
-| RFC-0016 | Security Model |
-| RFC-0017 | Testing Strategy |
 
 ## Reading Order
 

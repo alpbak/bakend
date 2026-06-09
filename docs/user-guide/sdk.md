@@ -1,80 +1,35 @@
 # SDK
 
-Use Bakend client libraries from JavaScript, TypeScript, or Dart applications.
+Bakend provides client libraries for JavaScript/TypeScript and Dart.
 
-> **Beta:** Install SDKs from the Bakend monorepo. Registry publishing (npm, pub.dev) is planned for a future release.
+## Install
 
-## JavaScript / TypeScript
-
-Package: `@bakend/client`
-
-### Install from monorepo
-
-Clone Bakend and install workspace dependencies:
+**npm:**
 
 ```bash
-git clone https://github.com/alpbak/bakend.git
-cd bakend
-bun install
+npm install @bakend/client
 ```
 
-In a project inside the monorepo (or with workspace reference):
-
-```ts
-import { BakendClient } from "@bakend/client";
-
-const client = new BakendClient("http://localhost:8080");
-```
-
-### Example
-
-Run the SDK demo:
+**pub.dev:**
 
 ```bash
-cd examples/sdk-demo
-bun run ../../src/index.ts start
-# In another terminal:
-bun run demo.ts
+dart pub add bakend
 ```
 
-See [JavaScript SDK reference](../sdk/javascript.md) for full API.
-
-## Dart / Flutter
-
-Package: `bakend`
-
-### Install from monorepo
-
-Add a path dependency in your `pubspec.yaml`:
-
-```yaml
-dependencies:
-  bakend:
-    path: ../bakend/sdk/dart
-```
+**Monorepo development:**
 
 ```bash
-dart pub get
+bun install   # resolves @bakend/client from sdk/javascript
 ```
 
-```dart
-import 'package:bakend/bakend.dart';
+## Documentation
 
-final client = BakendClient('http://localhost:8080');
-```
+| SDK | Guide |
+|-----|-------|
+| JavaScript / TypeScript | [docs/sdk/javascript.md](../sdk/javascript.md) |
+| Dart | [docs/sdk/dart.md](../sdk/dart.md) |
+| LLM summary | [docs/llm/sdk.md](../llm/sdk.md) |
 
-See [Dart SDK reference](../sdk/dart.md) for full API.
+## Example
 
-## Capabilities
-
-Both SDKs support:
-
-- Authentication (register, login, refresh, logout)
-- Collection CRUD
-- File storage upload/download
-- Realtime WebSocket subscriptions
-
-## Related
-
-- [SDK index](../sdk/README.md)
-- [examples/sdk-demo/](../../examples/sdk-demo/)
+See `examples/sdk-demo/`.

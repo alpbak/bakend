@@ -224,7 +224,7 @@ Bakend intentionally focuses on simplicity.
 Install:
 
 ```bash
-curl -fsSL https://bakend.dev/install.sh | sh
+curl -fsSL https://alpbak.github.io/bakend/install.sh | sh
 ```
 
 Create project:

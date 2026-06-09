@@ -6,70 +6,57 @@ The `bak` executable is the primary interface for Bakend projects.
 
 | Command | Description | Status |
 |---|---|---|
+| `bak init [name]` | Create a new Bakend project | Implemented |
 | `bak start [--config <path>] [--watch]` | Start the Bakend server | Implemented |
 | `bak dev [--config <path>]` | Start with function hot reload | Implemented |
 | `bak version` | Print Bakend version | Implemented |
-| `bak init [name]` | Create a new Bakend project | Planned |
-| `bak migrate` | Run database migrations | Planned |
-| `bak functions` | List and manage functions | Planned |
-| `bak jobs` | List and manage jobs | Planned |
+| `bak functions list` | List registered function triggers | Implemented |
+| `bak jobs list` | List registered jobs | Implemented |
+| `bak jobs runs <name>` | Show recent runs for a job | Implemented |
+| `bak migrate status` | Diff `collections/*.json` vs database | Implemented |
+| `bak migrate apply` | Apply collection JSON files to database | Implemented |
+| `bak migrate export` | Export database schemas to JSON files | Implemented |
+| `bak backup create [--output <path>]` | Backup database and storage | Implemented |
+| `bak backup restore <archive> [--force]` | Restore from backup archive | Implemented |
+| `bak storage prune` | Remove orphan files not referenced by records | Implemented |
 
 ## Examples
 
 ```bash
-bun run start
+bak init myapp
+cd myapp
+bak start
 ```
 
 ```bash
-bun run src/index.ts start --config ./bakend.json
+bak migrate status
+bak migrate apply
+bak migrate export
 ```
 
 ```bash
-bun run src/index.ts dev
+bak backup create --output ./backups/latest.tar.gz
 ```
 
 ```bash
-bun run src/index.ts start --watch
-```
-
-```bash
-bun run src/index.ts version
-```
-
-```bash
-bun run src/index.ts --help
+bak functions list
+bak jobs list
+bak jobs runs heartbeat
 ```
 
 ## Production Binary
 
-Build a single executable:
-
 ```bash
-bun run build
-./dist/bak version
-./dist/bak start --config bakend.json
+bak version
+bak start --config bakend.json
 ```
 
 See `docs/user-guide/deployment.md` for VPS, Docker, and systemd setup.
 
 ## Configuration
 
-Default config file: `bakend.json`
+Default config file: `bakend.json` beside your project data.
 
-```json
-{
-  "port": 8080,
-  "database": "./bakend.db",
-  "storage": "./storage",
-  "logLevel": "INFO"
-}
-```
-
-Environment overrides:
-
-- `BAKEND_PORT`
-- `BAKEND_DATABASE`
-- `BAKEND_STORAGE`
-- `BAKEND_LOG_LEVEL`
+Paths in config are resolved relative to the config file directory.
 
 Log levels: `DEBUG`, `INFO`, `WARN`, `ERROR`

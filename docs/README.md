@@ -1,6 +1,6 @@
 # Bakend Documentation
 
-Documentation hub for Bakend v0.1 beta.
+Documentation hub for Bakend v1.0.
 
 **Bakend** = PocketBase + Functions + Jobs — one executable, SQLite, TypeScript functions, cron jobs, and an admin dashboard.
 

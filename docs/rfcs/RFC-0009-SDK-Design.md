@@ -184,8 +184,7 @@ Connect to `WS {baseUrl}/api/realtime?token=<jwt>` when authenticated.
 - Admin API client (`/api/admin/*`)
 - Pagination, filtering, sorting
 - Code-generated per-collection types
-- npm / pub.dev publishing (Milestone 13)
-- Automatic WebSocket reconnect
+- Automatic WebSocket reconnect (added in 1.0)
 - Dashboard refactor to use SDK
 
 ## Test Strategy

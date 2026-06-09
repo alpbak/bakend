@@ -32,7 +32,7 @@ describe("start", () => {
     }
 
     expect(lines).toEqual([
-      "Bakend v0.1",
+      "Bakend v1.0",
       "",
       "Database: ready",
       "API: ready",
@@ -69,7 +69,7 @@ describe("start", () => {
 
     const body = (await response.json()) as { status: string; version: string };
     expect(body.status).toBe("ok");
-    expect(body.version).toBe("0.1.0");
+    expect(body.version).toBe("1.0.0");
   });
 
   test("loads collections from collections/*.json at startup", async () => {

@@ -1,135 +1,51 @@
 # JavaScript / TypeScript SDK
 
-> Status: Implemented (Milestone 11)
+> Status: Implemented (Milestone 11) · Published on npm (Milestone 14)
 
-Client library for authentication, CRUD, storage, and realtime.
+**Package:** `@bakend/client`
 
-**Package:** `@bakend/client` (workspace-local during beta; npm publishing planned post-beta)
+## Install
 
-## Installation
+```bash
+npm install @bakend/client
+```
 
-From the Bakend monorepo:
+Workspace development (Bakend monorepo):
 
 ```bash
 bun install
 ```
 
-Import in your app:
-
-```ts
-import { BakendClient } from "@bakend/client";
-```
-
-## Quick Start
+## Quick start
 
 ```ts
 import { BakendClient } from "@bakend/client";
 
-const client = new BakendClient("http://localhost:8080");
+const client = new BakendClient({ baseUrl: "http://localhost:8080" });
 
-await client.auth.register({
-  email: "user@example.com",
-  password: "password123",
-});
-
+await client.auth.register({ email: "you@example.com", password: "password123" });
 const posts = client.collection("posts");
-const post = await posts.create({ title: "Hello", content: "World" });
-const all = await posts.list();
-console.log(all);
+const record = await posts.create({ title: "Hello" });
 ```
 
-## Authentication
+## Modules
 
-```ts
-await client.auth.register({ email, password });
-await client.auth.login({ email, password });
-await client.auth.refresh();
-await client.auth.logout();
-const user = await client.auth.getMe();
-
-client.auth.token;        // current access JWT
-client.auth.refreshToken; // current refresh token
-```
-
-### Browser token persistence
-
-```ts
-import {
-  BakendClient,
-  createLocalStorageAuthStore,
-} from "@bakend/client";
-
-const client = new BakendClient("http://localhost:8080", {
-  authStore: createLocalStorageAuthStore(),
-});
-```
-
-## Collections (CRUD)
-
-```ts
-const posts = client.collection("posts");
-
-await posts.list();
-await posts.get("rec_...");
-await posts.create({ title: "Hello" });
-await posts.update("rec_...", { title: "Updated" });
-await posts.delete("rec_...");
-```
-
-## Storage
-
-```ts
-const file = new Blob(["hello"], { type: "text/plain" });
-const metadata = await client.storage.upload(file, {
-  visibility: "public",
-  filename: "hello.txt",
-});
-
-const blob = await client.storage.download(metadata.id);
-const url = client.storage.getDownloadUrl(metadata.id);
-await client.storage.delete(metadata.id);
-```
+| Module | Methods |
+|--------|---------|
+| `auth` | `register`, `login`, `refresh`, `logout`, `getMe` |
+| `collection(name)` | `create`, `get`, `list`, `update`, `delete` |
+| `storage` | `upload`, `download`, `delete` |
+| `realtime` | `subscribe`, `unsubscribe`, `disconnect` (auto-reconnect) |
 
 ## Realtime
 
 ```ts
-const off = client.realtime.subscribe("posts.*", (event) => {
+const unsub = client.realtime.subscribe("posts.*", (event) => {
   console.log(event.type, event.payload);
 });
-
-client.realtime.unsubscribe("posts.*");
-client.realtime.disconnect();
 ```
 
-## Errors
+## See also
 
-Failed API calls throw `BakendError`:
-
-```ts
-import { BakendError } from "@bakend/client";
-
-try {
-  await client.auth.login({ email, password });
-} catch (error) {
-  if (error instanceof BakendError) {
-    console.log(error.code, error.status, error.message);
-  }
-}
-```
-
-## Configuration
-
-```ts
-const client = new BakendClient("http://localhost:8080", {
-  autoRefresh: true, // retry once with refresh token on 401 (default)
-});
-```
-
-## See Also
-
-- [Dart SDK](./dart.md)
-- [REST API](../api/rest-api.md)
-- [Authentication API](../api/auth.md)
-- [WebSocket API](../api/websocket-api.md)
-- [Storage API](../api/storage.md)
-- RFC-0009 SDK Design
+- [SDK user guide](../user-guide/sdk.md)
+- [RFC-0009 SDK Design](../rfcs/RFC-0009-SDK-Design.md)

@@ -1,19 +1,20 @@
 ---
+const installUrl = "https://alpbak.github.io/bakend/install.sh";
 const repo = "alpbak/bakend";
 ---
 
 <div class="install-block">
   <h3>Install</h3>
-  <pre><code># Latest release (Linux / macOS)
+  <pre><code># One-liner (Linux / macOS)
+curl -fsSL {installUrl} | sudo sh
+
+# Or clone and run locally
 git clone https://github.com/{repo}.git
 cd bakend
-sudo sh scripts/install.sh
-
-# Or download from GitHub Releases
-# https://github.com/{repo}/releases</code></pre>
+sudo sh scripts/install.sh</code></pre>
   <p class="install-note">
     See <a href={`https://github.com/${repo}/blob/main/docs/user-guide/installation.md`}>installation guide</a>
-    for Docker and development setup.
+    for Docker, development setup, and project scaffolding with <code>bak init</code>.
   </p>
 </div>
 

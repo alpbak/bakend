@@ -1,6 +1,6 @@
 {
   "name": "bakend",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "PocketBase + Functions + Jobs — the simplest backend platform for MVPs",
   "type": "module",
   "private": true,
@@ -19,7 +19,8 @@
     "typecheck": "bunx tsc --noEmit",
     "test": "bun test",
     "test:sdk": "bun test tests/sdk",
-    "sdk:check": "cd sdk/javascript && tsc --noEmit",
+    "sdk:build": "cd sdk/javascript && bun run build",
+    "sdk:check": "cd sdk/javascript && bun run build",
     "test:dart": "cd sdk/dart && dart pub get && dart test",
     "lint": "echo 'Lint not configured yet'",
     "dashboard:dev": "cd dashboard && bun run dev",

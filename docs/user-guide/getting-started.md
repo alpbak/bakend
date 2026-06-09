@@ -8,6 +8,18 @@ New to Bakend? Start with [Tutorial 01: Build a Todo API](../../tutorials/01-tod
 
 For installing the binary, see [Installation](installation.md). For VPS or Docker deployment, see [Deployment](deployment.md).
 
+## Create a Project
+
+After installing the `bak` binary:
+
+```bash
+bak init myapp
+cd myapp
+bak start
+```
+
+`bak init` creates `bakend.json`, `collections/`, `functions/`, `jobs/`, and a generated JWT secret.
+
 ## Development Setup
 
 Install [Bun](https://bun.sh), clone the repository, and install dependencies:
@@ -18,24 +30,32 @@ cd bakend
 bun install
 ```
 
-## Configuration
-
-Copy the example config and adjust as needed:
+From the repo you can run `bun run src/index.ts init myapp` or scaffold in place:
 
 ```bash
-cp bakend.json.example bakend.json
+mkdir myapp && cd myapp
+bun run ../src/index.ts init
 ```
+
+## Configuration
+
+`bakend.json` (created by `bak init`):
 
 ```json
 {
   "port": 8080,
   "database": "./bakend.db",
   "storage": "./storage",
-  "logLevel": "INFO"
+  "logLevel": "INFO",
+  "auth": {
+    "jwtSecret": "<generated>",
+    "accessTokenTtl": "15m",
+    "refreshTokenTtl": "7d"
+  }
 }
 ```
 
-If `bakend.json` is missing, Bakend uses these defaults.
+Paths are relative to the `bakend.json` file location.
 
 Environment overrides:
 
@@ -43,23 +63,24 @@ Environment overrides:
 - `BAKEND_DATABASE`
 - `BAKEND_STORAGE`
 - `BAKEND_LOG_LEVEL`
+- `BAKEND_LOG_FILE`
 
 ## Start the Server
+
+```bash
+bak start
+```
+
+Or from the Bakend repo during development:
 
 ```bash
 bun run start
 ```
 
-Or with the CLI bin:
-
-```bash
-bun run src/index.ts start
-```
-
 Expected output:
 
 ```text
-Bakend v0.1
+Bakend v1.0
 
 Database: ready
 API: ready
@@ -74,11 +95,11 @@ curl http://localhost:8080/health
 ```
 
 ```json
-{ "status": "ok", "version": "0.1.0" }
+{ "status": "ok", "version": "1.0.0" }
 ```
 
 ## Custom Config Path
 
 ```bash
-bun run src/index.ts start --config path/to/bakend.json
+bak start --config path/to/bakend.json
 ```

@@ -15,6 +15,7 @@ export interface BakendConfig {
   database: string;
   storage: string;
   logLevel: LogLevel;
+  logFile?: string;
   auth: AuthConfig;
   dashboard: DashboardConfig;
 }

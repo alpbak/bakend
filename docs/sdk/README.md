@@ -2,16 +2,14 @@
 
 Client libraries for applications connecting to Bakend.
 
-> **Beta note:** SDKs are installed from the Bakend monorepo during beta. npm and pub.dev publishing is planned for a future release.
-
-| SDK | Package | Guide |
-|-----|---------|-------|
-| JavaScript / TypeScript | `@bakend/client` | [javascript.md](javascript.md) |
-| Dart / Flutter | `bakend` | [dart.md](dart.md) |
+| SDK | Package | Install |
+|-----|---------|---------|
+| JavaScript / TypeScript | `@bakend/client` | `npm install @bakend/client` |
+| Dart / Flutter | `bakend` | `dart pub add bakend` |
 
 ## Quick start
 
-See [SDK user guide](../user-guide/sdk.md) for installation from the monorepo.
+See [SDK user guide](../user-guide/sdk.md).
 
 ## Example
 

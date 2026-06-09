@@ -13,11 +13,20 @@ Build an authenticated todo API with owner-scoped records, a collection trigger,
 
 ## Step 1: Start the server
 
-From the todo-api example directory:
+**Option A — use the bundled example:**
 
 ```bash
 cd examples/todo-api
 bun run ../../src/index.ts start
+```
+
+**Option B — scaffold your own project:**
+
+```bash
+bak init my-todos
+cd my-todos
+# copy collections and functions from examples/todo-api/
+bak start
 ```
 
 Expected output includes `Listening on :8080`.
