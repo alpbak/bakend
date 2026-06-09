@@ -98,12 +98,17 @@ Jobs load at startup. Use `bak dev` or `bak start --watch` to reload job files w
 
 ## 6. Authenticate a Client
 
-> Planned — Milestone 7
+```bash
+curl -X POST http://localhost:8080/api/auth/register \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"user@example.com","password":"password123"}'
 
-```http
-POST /api/auth/register
-POST /api/auth/login
+curl -X POST http://localhost:8080/api/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"user@example.com","password":"password123"}'
 ```
+
+Use the returned `token` as `Authorization: Bearer <token>` on protected collection routes. Refresh with `POST /api/auth/refresh` and revoke with `POST /api/auth/logout`.
 
 ## 7. Subscribe to Realtime
 

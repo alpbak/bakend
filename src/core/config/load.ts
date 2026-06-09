@@ -3,10 +3,50 @@ import { readFileSync } from "node:fs";
 import { LOG_LEVELS } from "../logging/types.ts";
 import type { LogLevel } from "../logging/types.ts";
 import { DEFAULT_CONFIG, DEFAULT_CONFIG_PATH } from "./defaults.ts";
-import type { BakendConfig, LoadConfigOptions } from "./types.ts";
+import type { AuthConfig, BakendConfig, LoadConfigOptions } from "./types.ts";
 
 function isLogLevel(value: unknown): value is LogLevel {
   return typeof value === "string" && LOG_LEVELS.includes(value as LogLevel);
+}
+
+const DURATION_PATTERN = /^(\d+)([smhd])$/;
+
+function isDuration(value: unknown): value is string {
+  return typeof value === "string" && DURATION_PATTERN.test(value);
+}
+
+function validateAuthConfig(raw: unknown): AuthConfig {
+  const defaults = DEFAULT_CONFIG.auth;
+  const source =
+    typeof raw === "object" && raw !== null && !Array.isArray(raw)
+      ? (raw as Record<string, unknown>)
+      : {};
+
+  const jwtSecret =
+    typeof source.jwtSecret === "string" && source.jwtSecret.trim().length > 0
+      ? source.jwtSecret
+      : defaults.jwtSecret;
+
+  const accessTokenTtl = source.accessTokenTtl ?? defaults.accessTokenTtl;
+  const refreshTokenTtl = source.refreshTokenTtl ?? defaults.refreshTokenTtl;
+
+  if (!isDuration(accessTokenTtl)) {
+    throw new Error(
+      'Invalid config: auth.accessTokenTtl must be a duration like "15m", "1h", or "7d"',
+    );
+  }
+
+  if (!isDuration(refreshTokenTtl)) {
+    throw new Error(
+      'Invalid config: auth.refreshTokenTtl must be a duration like "15m", "1h", or "7d"',
+    );
+  }
+
+  return {
+    jwtSecret,
+    accessTokenTtl,
+    refreshTokenTtl,
+  };
 }
 
 function validateConfig(raw: Record<string, unknown>): BakendConfig {
@@ -36,11 +76,12 @@ function validateConfig(raw: Record<string, unknown>): BakendConfig {
     database,
     storage,
     logLevel,
+    auth: validateAuthConfig(raw.auth),
   };
 }
 
 function applyEnvOverrides(config: BakendConfig): BakendConfig {
-  const next = { ...config };
+  const next = { ...config, auth: { ...config.auth } };
 
   const port = process.env.BAKEND_PORT;
   if (port !== undefined) {
@@ -69,7 +110,20 @@ function applyEnvOverrides(config: BakendConfig): BakendConfig {
     next.logLevel = logLevel;
   }
 
+  const jwtSecret = process.env.BAKEND_AUTH_JWT_SECRET;
+  if (jwtSecret !== undefined) {
+    if (jwtSecret.trim().length === 0) {
+      throw new Error("Invalid BAKEND_AUTH_JWT_SECRET environment variable: must be non-empty");
+    }
+    next.auth.jwtSecret = jwtSecret;
+  }
+
   return validateConfig(next);
+}
+
+export function getAdminEmailFromEnv(): string | undefined {
+  const email = process.env.BAKEND_ADMIN_EMAIL;
+  return email && email.trim().length > 0 ? email.trim().toLowerCase() : undefined;
 }
 
 export function loadConfig(options: LoadConfigOptions = {}): BakendConfig {

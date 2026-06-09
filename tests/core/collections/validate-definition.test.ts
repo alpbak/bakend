@@ -69,13 +69,25 @@ describe("validateDefinition", () => {
     const result = validateDefinition(
       {
         name: "posts",
-        fields: [{ name: "author_id", type: "relation", collection: "users" }],
+        fields: [{ name: "author_id", type: "relation", collection: "authors" }],
       },
       { existingCollections: [] },
     );
 
     expect(result.valid).toBe(false);
     expect(result.errors[0]?.rule).toBe("relation");
+  });
+
+  test("allows relation fields to reference system users collection", () => {
+    const result = validateDefinition(
+      {
+        name: "posts",
+        fields: [{ name: "author_id", type: "relation", collection: "users" }],
+      },
+      { existingCollections: [] },
+    );
+
+    expect(result.valid).toBe(true);
   });
 
   test("accepts relation fields when target collection exists", () => {

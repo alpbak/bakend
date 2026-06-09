@@ -1,6 +1,6 @@
 # REST API
 
-> Status: Implemented (Milestone 4)
+> Status: Implemented (Milestone 4, permissions in Milestone 7)
 
 Auto-generated CRUD endpoints for all collections.
 
@@ -18,10 +18,20 @@ For every registered collection `{collection}`:
 
 Health endpoints remain available at `/` and `/health`.
 
+## Authentication
+
+Protected collections require a valid JWT:
+
+```http
+Authorization: Bearer <access-token>
+```
+
+Obtain tokens via [Authentication API](./auth.md). The `users` collection is not exposed via CRUD — use auth endpoints instead.
+
 ## Request Format
 
 - POST and PUT require `Content-Type: application/json`
-- Request body must be a JSON object with field names matching the collection schema (camelCase)
+- Request body must be a JSON object with field names matching the collection schema
 - System fields (`id`, `createdAt`, `updatedAt`) are managed by Bakend — do not send them on create
 
 ## Response Format
@@ -88,6 +98,8 @@ Returns `204 No Content` on success.
 | 201 | Record created |
 | 204 | Record deleted |
 | 400 | Invalid JSON body or validation failure |
+| 401 | Authentication required or invalid token |
+| 403 | Authenticated but insufficient permissions |
 | 404 | Unknown collection or record |
 | 405 | Unsupported HTTP method |
 
@@ -97,6 +109,8 @@ Returns `204 No Content` on success.
 |------|-------------|
 | `validation_error` | Record failed validation |
 | `bad_request` | Invalid or missing JSON body |
+| `unauthorized` | Missing or invalid authentication |
+| `forbidden` | Insufficient permissions |
 | `not_found` | Collection or record not found |
 | `method_not_allowed` | HTTP method not supported for route |
 
@@ -133,10 +147,13 @@ Successful CRUD operations emit Event Bus events:
 
 All record events use `source: "collections"`.
 
+## Collection Permissions
+
+Collections may define optional `permissions` in their JSON definition. Rules: `public`, `authenticated`, `owner`, `admin`. See [Authentication user guide](../user-guide/authentication.md).
+
 ## Not Available Yet
 
 | Feature | Milestone |
 |---------|-----------|
-| Authentication / authorization | 7 |
 | Filtering, sorting, pagination | Post-M4 |
 | Collection management via REST | Out of scope |

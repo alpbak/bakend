@@ -3,6 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { closeDatabase, getSchemaVersion, initDatabase } from "../../../src/core/database/init.ts";
+import { DEFAULT_CONFIG } from "../../../src/core/config/defaults.ts";
 import { createLogger } from "../../../src/core/logging/logger.ts";
 
 describe("initDatabase", () => {
@@ -19,15 +20,13 @@ describe("initDatabase", () => {
     const logger = createLogger("ERROR");
     const db = initDatabase(
       {
-        port: 8080,
+        ...DEFAULT_CONFIG,
         database: ":memory:",
-        storage: "./storage",
-        logLevel: "INFO",
       },
       logger,
     );
 
-    expect(getSchemaVersion(db)).toBe("1");
+    expect(getSchemaVersion(db)).toBe("2");
 
     const collectionsTable = db
       .query<{ name: string }, []>(
@@ -46,15 +45,14 @@ describe("initDatabase", () => {
 
     const db = initDatabase(
       {
-        port: 8080,
+        ...DEFAULT_CONFIG,
         database: databasePath,
         storage: join(tempDir, "storage"),
-        logLevel: "INFO",
       },
       logger,
     );
 
-    expect(getSchemaVersion(db)).toBe("1");
+    expect(getSchemaVersion(db)).toBe("2");
     closeDatabase(db);
   });
 });

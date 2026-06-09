@@ -83,17 +83,17 @@ describe("validateRecord", () => {
     const database = db!;
 
     engine.create({
-      name: "users",
+      name: "accounts",
       fields: [{ name: "email", type: "string", unique: true }],
     });
 
     database.run(
-      'INSERT INTO "users" ("id", "created_at", "updated_at", "email") VALUES (?, ?, ?, ?)',
+      'INSERT INTO "accounts" ("id", "created_at", "updated_at", "email") VALUES (?, ?, ?, ?)',
       ["rec_1", "2026-01-01T00:00:00.000Z", "2026-01-01T00:00:00.000Z", "a@example.com"],
     );
 
     const duplicate = engine.validateRecord(
-      "users",
+      "accounts",
       { email: "a@example.com" },
       "create",
     );
@@ -101,7 +101,7 @@ describe("validateRecord", () => {
     expect(duplicate.errors[0]?.rule).toBe("unique");
 
     const update = engine.validateRecord(
-      "users",
+      "accounts",
       { id: "rec_1", email: "a@example.com" },
       "update",
     );

@@ -14,6 +14,9 @@ import type { EventBus } from "../core/events/types.ts";
 import { createLogger } from "../core/logging/logger.ts";
 import { createFunctionsEngine } from "../core/functions/create-functions-engine.ts";
 import type { FunctionsEngine } from "../core/functions/types.ts";
+import { createAuthEngine } from "../core/auth/create-auth-engine.ts";
+import type { AuthEngine } from "../core/auth/types.ts";
+import { getAdminEmailFromEnv } from "../core/config/load.ts";
 import { createJobsEngine } from "../core/jobs/create-jobs-engine.ts";
 import type { JobsEngine } from "../core/jobs/types.ts";
 import { createServer } from "../core/server/create-server.ts";
@@ -31,6 +34,7 @@ export interface StartResult {
   eventBus: EventBus;
   collections: CollectionsEngine;
   recordStore: RecordStore;
+  auth: AuthEngine;
   functions: FunctionsEngine;
   jobs: JobsEngine;
   shutdown: () => void;
@@ -81,7 +85,15 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
   });
   await jobs.load();
 
-  const server = createServer(config, logger, { collections, recordStore });
+  const auth = createAuthEngine({
+    db,
+    logger,
+    eventBus,
+    config,
+    adminEmail: getAdminEmailFromEnv(),
+  });
+
+  const server = createServer(config, logger, { collections, recordStore, auth });
 
   printStartupBanner(server.port);
 
@@ -115,6 +127,7 @@ export async function start(options: StartOptions = {}): Promise<StartResult> {
     eventBus,
     collections,
     recordStore,
+    auth,
     functions,
     jobs,
     shutdown,

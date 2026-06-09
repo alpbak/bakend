@@ -37,8 +37,8 @@ onCreate("posts", async ({ record, logger }) => {
 | `onCreate("posts", fn)` | `posts.created` | Implemented |
 | `onUpdate("posts", fn)` | `posts.updated` | Implemented |
 | `onDelete("posts", fn)` | `posts.deleted` | Implemented |
-| `onLogin("users", fn)` | `auth.login` | Registered (events in Milestone 7) |
-| `onRegister("users", fn)` | `auth.register` | Registered (events in Milestone 7) |
+| `onLogin("users", fn)` | `auth.login` | Implemented |
+| `onRegister("users", fn)` | `auth.register` | Implemented |
 
 ## Function Context
 
@@ -50,10 +50,11 @@ interface FunctionContext {
   record: Record<string, unknown>;
   db: Database;
   logger: Logger;
+  auth: { user: AuthUser | null };
 }
 ```
 
-`record` is extracted from `event.payload`. `auth` and `storage` are deferred to Milestones 7 and 8.
+`record` is extracted from `event.payload`. `auth.user` is populated for `auth.*` events. `storage` is deferred to Milestone 8.
 
 ## Lifecycle Events
 

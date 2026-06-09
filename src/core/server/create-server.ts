@@ -1,3 +1,4 @@
+import type { AuthEngine } from "../auth/types.ts";
 import type { BakendConfig } from "../config/types.ts";
 import type { Logger } from "../logging/logger.ts";
 import type { CollectionsEngine } from "../collections/types.ts";
@@ -12,6 +13,7 @@ export interface BakendServer {
 export interface CreateServerOptions {
   collections: CollectionsEngine;
   recordStore: RecordStore;
+  auth: AuthEngine;
 }
 
 export function createServer(
@@ -21,10 +23,14 @@ export function createServer(
 ): BakendServer {
   const server = Bun.serve({
     port: config.port,
-    fetch(request) {
+    async fetch(request) {
+      const authContext = await options.auth.resolveAuthContext(request);
+
       return handleApiRequest(request, {
         collections: options.collections,
         recordStore: options.recordStore,
+        auth: options.auth,
+        authContext,
         logger,
       });
     },

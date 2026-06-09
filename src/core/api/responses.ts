@@ -31,6 +31,18 @@ export function methodNotAllowedResponse(): Response {
   return jsonError("method_not_allowed", "Method not allowed", 405);
 }
 
+export function unauthorizedResponse(message = "Unauthorized"): Response {
+  return jsonError("unauthorized", message, 401);
+}
+
+export function forbiddenResponse(message = "Forbidden"): Response {
+  return jsonError("forbidden", message, 403);
+}
+
+export function conflictResponse(message: string): Response {
+  return jsonError("conflict", message, 409);
+}
+
 export async function parseJsonBody(request: Request): Promise<Record<string, unknown>> {
   const contentType = request.headers.get("content-type") ?? "";
 

@@ -123,7 +123,10 @@ export function validateDefinition(
         errors.push(
           invalid(field.name, "relation", `Relation field "${field.name}" requires a collection`),
         );
-      } else if (!options.existingCollections.includes(field.collection)) {
+      } else if (
+        field.collection !== "users" &&
+        !options.existingCollections.includes(field.collection)
+      ) {
         errors.push(
           invalid(
             field.name,

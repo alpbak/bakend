@@ -1,4 +1,5 @@
 import type { Database } from "bun:sqlite";
+import type { AuthUser } from "../auth/types.ts";
 import type { BakendEvent } from "../events/types.ts";
 import type { Logger } from "../logging/logger.ts";
 
@@ -9,6 +10,7 @@ export interface FunctionContext {
   record: Record<string, unknown>;
   db: Database;
   logger: Logger;
+  auth: { user: AuthUser | null };
 }
 
 export type TriggerHandler = (context: FunctionContext) => void | Promise<void>;

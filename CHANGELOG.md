@@ -6,6 +6,17 @@ All notable changes to Bakend are documented in this file.
 
 ### Added
 
+- Milestone 7 Authentication: email/password registration and login, JWT access tokens, refresh sessions, collection permission enforcement, and auth event emissions.
+- Auth endpoints: `POST /api/auth/register`, `/login`, `/refresh`, `/logout`.
+- System user store (`_users`, `_sessions` tables); schema version `2`.
+- Collection `permissions` block (`public`, `authenticated`, `owner`, `admin`) with `user_id` owner convention.
+- `auth` config in `bakend.json` (`jwtSecret`, `accessTokenTtl`, `refreshTokenTtl`).
+- `auth` field in function context; `onLogin` / `onRegister` events are live.
+- Auth wired into `start()` via `StartResult.auth`.
+- API documentation: `docs/api/auth.md`.
+- User guide: `docs/user-guide/authentication.md`.
+- RFC-0005 Implementation section.
+- Example: `examples/auth-demo/`.
 - Milestone 6 Jobs Engine: cron-based job discovery, in-process scheduler, execution with retry, lifecycle events, in-memory run history, and hot reload.
 - Jobs wired into `start()` via `StartResult.jobs`.
 - User guide: `docs/user-guide/jobs.md`.
@@ -42,5 +53,8 @@ All notable changes to Bakend are documented in this file.
 
 ### Changed
 
+- Database bootstrap schema version bumped to `2`; adds `_users` and `_sessions` tables.
+- `users` collection name is reserved; `/api/users` CRUD is blocked.
+- Collection relation fields may reference system `users` collection.
 - Database bootstrap schema version bumped to `1`; adds `_collections` metadata table.
 - Milestone 0 project foundation: repository structure, documentation skeleton, Bun tooling, and CI workflow.

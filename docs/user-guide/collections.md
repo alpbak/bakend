@@ -117,5 +117,5 @@ Programmatic access is also available via `StartResult.recordStore` after `bak s
 |---------|-----------|
 | Filtering, sorting, pagination | Post-M4 |
 | Schema changes / migrations | RFC-0012 |
-| Collection permissions | 7 |
+| Collection permissions | Implemented — see [Authentication](./authentication.md) |
 | File upload for `file` fields | 8 |

@@ -20,7 +20,7 @@ Bakend Core (src/core/)
   ├── events/       Event Bus (Milestone 2 — implemented)
   ├── functions/    TypeScript triggers (Milestone 5 — implemented)
   ├── jobs/         Cron scheduler
-  ├── auth/         JWT + sessions
+  ├── auth/         JWT + sessions (Milestone 7 — implemented)
   └── storage/      Filesystem
         │
         ▼

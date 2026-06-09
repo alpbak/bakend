@@ -14,7 +14,20 @@ export type FieldType = (typeof FIELD_TYPES)[number];
 
 export const SYSTEM_FIELD_NAMES = ["id", "createdAt", "updatedAt"] as const;
 
-export const RESERVED_COLLECTION_NAMES = ["_bakend_meta", "_collections"] as const;
+export const RESERVED_COLLECTION_NAMES = ["_bakend_meta", "_collections", "users"] as const;
+
+export const PERMISSION_RULES = ["public", "authenticated", "owner", "admin"] as const;
+
+export type PermissionRule = (typeof PERMISSION_RULES)[number];
+
+export type PermissionOperation = "create" | "read" | "update" | "delete";
+
+export interface CollectionPermissions {
+  create?: PermissionRule;
+  read?: PermissionRule;
+  update?: PermissionRule;
+  delete?: PermissionRule;
+}
 
 export const NAME_PATTERN = /^[a-z][a-z0-9_]*$/;
 
@@ -32,6 +45,7 @@ export interface FieldDefinition {
 export interface CollectionDefinition {
   name: string;
   fields: FieldDefinition[];
+  permissions?: CollectionPermissions;
 }
 
 export interface CollectionMeta {

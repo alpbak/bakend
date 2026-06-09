@@ -30,10 +30,14 @@ export class CollectionNotFoundError extends Error {
   }
 }
 
+export interface ListRecordsOptions {
+  userId?: string;
+}
+
 export interface RecordStore {
   create(collection: string, data: Record<string, unknown>): Record<string, unknown>;
   get(collection: string, id: string): Record<string, unknown> | null;
-  list(collection: string): Record<string, unknown>[];
+  list(collection: string, options?: ListRecordsOptions): Record<string, unknown>[];
   update(collection: string, id: string, data: Record<string, unknown>): Record<string, unknown>;
   delete(collection: string, id: string): boolean;
 }
@@ -109,9 +113,20 @@ export function createRecordStore(options: CreateRecordStoreOptions): RecordStor
       return row ? rowToRecord(definition, row) : null;
     },
 
-    list(collection) {
+    list(collection, options) {
       const definition = getDefinition(collections, collection);
       const table = quoteIdentifier(collection);
+
+      if (options?.userId) {
+        const rows = db
+          .query<Record<string, unknown>, [string]>(
+            `SELECT * FROM ${table} WHERE ${quoteIdentifier("user_id")} = ? ORDER BY ${quoteIdentifier("created_at")} DESC, ${quoteIdentifier("id")} DESC`,
+          )
+          .all(options.userId);
+
+        return rows.map((row) => rowToRecord(definition, row));
+      }
+
       const rows = db
         .query<Record<string, unknown>, []>(
           `SELECT * FROM ${table} ORDER BY ${quoteIdentifier("created_at")} DESC, ${quoteIdentifier("id")} DESC`,

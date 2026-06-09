@@ -71,7 +71,8 @@ Emitted by the functions engine (source: `functions`):
 - Functions subscribe via Event Bus only (never called from record-store directly)
 - Handler errors never crash the process
 - Same-process execution in M5 (no worker sandbox)
-- `onLogin` / `onRegister` helpers exist; auth events arrive in Milestone 7
+- `onLogin` / `onRegister` fire on `auth.login` / `auth.register` events (Milestone 7)
+- `auth.user` is populated in function context for auth events
 
 ## Deferred
 

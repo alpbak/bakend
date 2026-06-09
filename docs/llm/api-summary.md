@@ -1,6 +1,6 @@
 # API Summary
 
-> Status: CRUD implemented (Milestone 4). Auth, storage, and realtime planned for later milestones.
+> Status: CRUD (Milestone 4) and Authentication (Milestone 7) implemented. Storage and realtime planned for later milestones.
 
 ## REST API (Milestone 4)
 
@@ -16,7 +16,7 @@ DELETE /api/{collection}/:id
 
 Full specification: `docs/api/rest-api.md`
 
-## Authentication (Milestone 7)
+## Authentication (Milestone 7 — implemented)
 
 ```http
 POST /api/auth/register
