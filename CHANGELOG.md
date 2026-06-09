@@ -4,6 +4,13 @@ All notable changes to Bakend are documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Website: hosted documentation section rendering `docs/` and `tutorials/` on GitHub Pages.
+- Website: docs layout with sidebar navigation, table of contents, and prev/next pager.
+- Website: light and dark theme toggle.
+- CI: website deploy workflow triggers on `docs/**` and `tutorials/**` changes.
+
 ## [0.1.0-beta] — 2026-06-09
 
 ### Added

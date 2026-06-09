@@ -1,0 +1,303 @@
+---
+import Layout from "./Layout.astro";
+import DocsSidebar from "../components/DocsSidebar.astro";
+import DocsToc from "../components/DocsToc.astro";
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  section: "docs" | "tutorials";
+  currentSlug: string;
+  headings?: MarkdownHeading[];
+  breadcrumbs?: { label: string; href?: string }[];
+}
+
+const {
+  title,
+  description,
+  section,
+  currentSlug,
+  headings = [],
+  breadcrumbs = [],
+} = Astro.props;
+---
+
+<Layout title={title} description={description} docs>
+  <div class="docs-shell">
+    <button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-label="Open navigation">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+      Menu
+    </button>
+    <div class="docs-backdrop" id="docs-backdrop"></div>
+    <DocsSidebar section={section} currentSlug={currentSlug} />
+    <article class="docs-article">
+      {
+        breadcrumbs.length > 0 && (
+          <nav class="docs-breadcrumb" aria-label="Breadcrumb">
+            {breadcrumbs.map((crumb, i) => (
+              <>
+                {i > 0 && <span class="sep">/</span>}
+                {crumb.href ? (
+                  <a href={crumb.href}>{crumb.label}</a>
+                ) : (
+                  <span>{crumb.label}</span>
+                )}
+              </>
+            ))}
+          </nav>
+        )
+      }
+      <div class="docs-prose">
+        <slot />
+      </div>
+      <slot name="footer" />
+    </article>
+    <DocsToc headings={headings} />
+  </div>
+</Layout>
+
+<script>
+  function initDocsSidebar() {
+    const toggle = document.getElementById("sidebar-toggle");
+    const close = document.getElementById("sidebar-close");
+    const backdrop = document.getElementById("docs-backdrop");
+
+    function open() {
+      document.body.classList.add("docs-sidebar-open");
+    }
+
+    function closeSidebar() {
+      document.body.classList.remove("docs-sidebar-open");
+    }
+
+    toggle?.addEventListener("click", open);
+    close?.addEventListener("click", closeSidebar);
+    backdrop?.addEventListener("click", closeSidebar);
+  }
+
+  initDocsSidebar();
+  document.addEventListener("astro:page-load", initDocsSidebar);
+</script>
+
+<style is:global>
+  main.main-docs {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  body.docs-sidebar-open {
+    overflow: hidden;
+  }
+
+  .docs-backdrop {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    body.docs-sidebar-open .docs-backdrop {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: color-mix(in srgb, var(--bg) 40%, transparent);
+      backdrop-filter: blur(2px);
+    }
+  }
+</style>
+
+<style>
+  .docs-shell {
+    display: flex;
+    align-items: flex-start;
+    min-height: calc(100vh - 57px - 73px);
+  }
+
+  .sidebar-toggle {
+    display: none;
+  }
+
+  .docs-article {
+    flex: 1;
+    min-width: 0;
+    padding: 2rem 2rem 4rem;
+    max-width: 760px;
+  }
+
+  .docs-breadcrumb {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+  }
+
+  .docs-breadcrumb a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .docs-breadcrumb a:hover {
+    color: var(--accent);
+  }
+
+  .docs-breadcrumb .sep {
+    color: var(--border);
+  }
+
+  .docs-prose :global(h1) {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+
+  .docs-prose :global(h2) {
+    font-size: 1.35rem;
+    margin: 2.25rem 0 0.75rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .docs-prose :global(h1 + h2) {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .docs-prose :global(h3) {
+    font-size: 1.1rem;
+    margin: 1.5rem 0 0.5rem;
+  }
+
+  .docs-prose :global(p),
+  .docs-prose :global(ul),
+  .docs-prose :global(ol) {
+    margin: 0.75rem 0;
+  }
+
+  .docs-prose :global(ul),
+  .docs-prose :global(ol) {
+    padding-left: 1.5rem;
+  }
+
+  .docs-prose :global(li) {
+    margin: 0.25rem 0;
+  }
+
+  .docs-prose :global(blockquote) {
+    border-left: 3px solid var(--accent);
+    padding: 0.5rem 0 0.5rem 1rem;
+    margin: 1rem 0;
+    color: var(--muted);
+  }
+
+  .docs-prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    margin: 1rem 0;
+    display: block;
+    overflow-x: auto;
+  }
+
+  .docs-prose :global(th),
+  .docs-prose :global(td) {
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+  }
+
+  .docs-prose :global(th) {
+    background: var(--surface);
+    font-weight: 600;
+  }
+
+  .docs-prose :global(tr:nth-child(even) td) {
+    background: color-mix(in srgb, var(--surface) 50%, transparent);
+  }
+
+  .docs-prose :global(code:not(pre code)) {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.1rem 0.35rem;
+    font-size: 0.85em;
+  }
+
+  .docs-prose :global(pre) {
+    margin: 1rem 0;
+  }
+
+  .docs-prose :global(.heading-anchor) {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .docs-prose :global(.heading-anchor:hover) {
+    text-decoration: none;
+  }
+
+  .docs-pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .docs-pager a {
+    font-size: 0.875rem;
+    color: var(--muted);
+    text-decoration: none;
+    max-width: 45%;
+  }
+
+  .docs-pager a:hover {
+    color: var(--accent);
+  }
+
+  .docs-pager .label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+  }
+
+  .docs-pager .next {
+    text-align: right;
+    margin-left: auto;
+  }
+
+  @media (max-width: 900px) {
+    .sidebar-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      position: fixed;
+      bottom: 1.25rem;
+      left: 1.25rem;
+      z-index: 50;
+      padding: 0.5rem 0.85rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 12px color-mix(in srgb, var(--text) 8%, transparent);
+    }
+
+    .docs-article {
+      padding: 1.5rem 1.25rem 5rem;
+    }
+  }
+</style>

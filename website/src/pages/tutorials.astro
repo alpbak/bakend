@@ -1,46 +1,31 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import { getEntry, render } from "astro:content";
+import DocsLayout from "../layouts/DocsLayout.astro";
+import DocsPager from "../components/DocsPager.astro";
+import { getTutorialNeighbors, tutorialsHref } from "../lib/docs-nav";
+import { extractTitle } from "../lib/docs-utils";
 
-const repo = "https://github.com/alpbak/bakend/tree/main/tutorials";
-const tutorials = [
-  {
-    title: "01 — Build a Todo API",
-    href: `${repo}/01-todo-api.md`,
-    desc: "Collections, authentication, CRUD, owner permissions, and functions",
-  },
-  {
-    title: "02 — Add Realtime",
-    href: `${repo}/02-realtime-app.md`,
-    desc: "WebSocket subscriptions and live collection events",
-  },
-  {
-    title: "03 — Deploy to a VPS",
-    href: `${repo}/03-deploy-vps.md`,
-    desc: "Binary install, systemd, and health checks",
-  },
-];
+const base = import.meta.env.BASE_URL;
+const entry = await getEntry("tutorials", "readme");
+if (!entry) throw new Error("tutorials README not found");
+
+const { Content, headings } = await render(entry);
+const title = extractTitle(entry);
+const { prev, next } = getTutorialNeighbors("");
 ---
 
-<Layout title="Tutorials — Bakend" description="Step-by-step Bakend tutorials">
-  <h1>Tutorials</h1>
-  <p class="lead">Learn Bakend by building. Each tutorial has a runnable example project.</p>
-
-  <div class="card-grid">
-    {
-      tutorials.map((t) => (
-        <div class="card">
-          <a class="card-link" href={t.href} target="_blank" rel="noopener noreferrer">
-            <h3>{t.title}</h3>
-            <p>{t.desc}</p>
-          </a>
-        </div>
-      ))
-    }
-  </div>
-
-  <h2>Prerequisites</h2>
-  <p>
-    <a href={`${repo}/README.md`} target="_blank" rel="noopener noreferrer">See tutorial index</a>
-    for Bun or binary requirements.
-  </p>
-</Layout>
+<DocsLayout
+  title="Tutorials — Bakend"
+  description="Step-by-step Bakend tutorials"
+  section="tutorials"
+  currentSlug=""
+  {headings}
+  breadcrumbs={[{ label: "Tutorials" }]}
+>
+  <Content />
+  <DocsPager
+    slot="footer"
+    prev={prev ? { title: prev.title, href: tutorialsHref(base, prev.slug) } : null}
+    next={next ? { title: next.title, href: tutorialsHref(base, next.slug) } : null}
+  />
+</DocsLayout>

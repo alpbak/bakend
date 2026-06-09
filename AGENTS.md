@@ -101,6 +101,8 @@ All three are required.
 
 Code changes without documentation updates are considered incomplete.
 
+Documentation and tutorial changes under `docs/` and `tutorials/` are published to the website on merge to `main`. Verify the site builds (`cd website && bun run build`) when changing markdown that should appear on [GitHub Pages](https://alpbak.github.io/bakend/docs/).
+
 ---
 
 # User Documentation Structure

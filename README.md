@@ -41,8 +41,8 @@ Open [http://localhost:8080/health](http://localhost:8080/health) and the [admin
 
 | Resource | Link |
 |----------|------|
-| Documentation | [docs/README.md](docs/README.md) |
-| Tutorials | [tutorials/](tutorials/) |
+| Documentation | [docs/README.md](docs/README.md) · [hosted docs](https://alpbak.github.io/bakend/docs/) |
+| Tutorials | [tutorials/](tutorials/) · [hosted tutorials](https://alpbak.github.io/bakend/tutorials/) |
 | Examples | [examples/](examples/) |
 | Website | [alpbak.github.io/bakend](https://alpbak.github.io/bakend/) |
 

@@ -12,7 +12,7 @@ Documentation hub for Bakend v0.1 beta.
 | [Getting Started](user-guide/getting-started.md) | First run and configuration |
 | [Tutorials](../tutorials/) | Step-by-step guides |
 | [Examples](../examples/) | Runnable demo projects |
-| [Website](https://alpbak.github.io/bakend/) | Marketing site (GitHub Pages) |
+| [Website](https://alpbak.github.io/bakend/docs/) | Hosted documentation (GitHub Pages) |
 
 ## User guide
 

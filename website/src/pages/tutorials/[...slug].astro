@@ -1,0 +1,47 @@
+---
+import { getCollection, render } from "astro:content";
+import DocsLayout from "../../layouts/DocsLayout.astro";
+import DocsPager from "../../components/DocsPager.astro";
+import { entryIdToSlug, getTutorialNeighbors, tutorialsHref } from "../../lib/docs-nav";
+import { extractTitle } from "../../lib/docs-utils";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("tutorials");
+
+  return entries
+    .map((entry) => {
+      const urlSlug = entryIdToSlug(entry.id);
+      if (urlSlug === null) return null;
+      return {
+        params: { slug: urlSlug },
+        props: { entry },
+      };
+    })
+    .filter((path): path is NonNullable<typeof path> => path !== null);
+}
+
+const base = import.meta.env.BASE_URL;
+const { entry } = Astro.props;
+const currentSlug = Astro.params.slug ?? "";
+const { Content, headings } = await render(entry);
+const title = extractTitle(entry);
+const { prev, next } = getTutorialNeighbors(currentSlug);
+---
+
+<DocsLayout
+  title={`${title} — Bakend Tutorials`}
+  section="tutorials"
+  currentSlug={currentSlug}
+  {headings}
+  breadcrumbs={[
+    { label: "Tutorials", href: tutorialsHref(base, "") },
+    { label: title },
+  ]}
+>
+  <Content />
+  <DocsPager
+    slot="footer"
+    prev={prev ? { title: prev.title, href: tutorialsHref(base, prev.slug) } : null}
+    next={next ? { title: next.title, href: tutorialsHref(base, next.slug) } : null}
+  />
+</DocsLayout>

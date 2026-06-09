@@ -1,0 +1,64 @@
+---
+interface Props {
+  prev: { title: string; href: string } | null;
+  next: { title: string; href: string } | null;
+}
+
+const { prev, next } = Astro.props;
+---
+
+{
+  (prev || next) && (
+    <nav class="docs-pager" aria-label="Document navigation">
+      {prev ? (
+        <a href={prev.href}>
+          <span class="label">Previous</span>
+          {prev.title}
+        </a>
+      ) : (
+        <span />
+      )}
+      {next ? (
+        <a href={next.href} class="next">
+          <span class="label">Next</span>
+          {next.title}
+        </a>
+      ) : null}
+    </nav>
+  )
+}
+
+<style>
+  .docs-pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .docs-pager a {
+    font-size: 0.875rem;
+    color: var(--muted);
+    text-decoration: none;
+    max-width: 45%;
+  }
+
+  .docs-pager a:hover {
+    color: var(--accent);
+  }
+
+  .docs-pager .label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+  }
+
+  .docs-pager .next {
+    text-align: right;
+    margin-left: auto;
+  }
+</style>
