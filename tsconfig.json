@@ -15,8 +15,7 @@
     "noImplicitOverride": true,
     "paths": {
       "@/*": ["./src/*"]
-    },
-    "types": ["bun"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "tests/**/*.ts", "scripts/**/*.ts"]
 }

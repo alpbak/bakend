@@ -16,7 +16,7 @@
   "scripts": {
     "start": "bun run src/index.ts start",
     "dev": "bun run src/index.ts dev",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "bunx tsc --noEmit",
     "test": "bun test",
     "test:sdk": "bun test tests/sdk",
     "sdk:check": "cd sdk/javascript && tsc --noEmit",
