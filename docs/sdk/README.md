@@ -11,6 +11,10 @@ Client libraries for applications connecting to Bakend.
 
 See [SDK user guide](../user-guide/sdk.md).
 
+## Publishing
+
+Maintainers: [publishing.md](publishing.md) — npm, pub.dev, and GitHub Actions secrets.
+
 ## Example
 
 [examples/sdk-demo/](../../examples/sdk-demo/) demonstrates auth, CRUD, storage, and realtime with `@bakend/client`.

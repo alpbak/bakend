@@ -1,8 +1,12 @@
 # Bakend JavaScript / TypeScript SDK
 
-Client library for authentication, CRUD, storage, and realtime.
+Client library for authentication, CRUD, storage, and realtime against a [Bakend](https://alpbak.github.io/bakend/) server.
 
-**Milestone:** 11 — SDKs
+## Install
+
+```bash
+npm install @bakend/client
+```
 
 ## Usage
 
@@ -18,4 +22,11 @@ const post = await posts.create({ title: "Hello" });
 const all = await posts.list();
 ```
 
-See [docs/sdk/javascript.md](../../docs/sdk/javascript.md) for full API reference.
+## Documentation
+
+- [JavaScript SDK guide](https://alpbak.github.io/bakend/docs/sdk/javascript/)
+- [Bakend documentation](https://alpbak.github.io/bakend/docs/)
+
+## License
+
+MIT

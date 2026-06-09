@@ -16,6 +16,15 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Require NPM_TOKEN
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "NPM_TOKEN secret is not configured"
+            exit 1
+          fi
+
       - uses: oven-sh/setup-bun@v2.2.0
         with:
           bun-version: latest
@@ -25,12 +34,20 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
 
-      - name: Sync SDK version with release tag
-        if: github.event_name == 'release'
-        working-directory: sdk/javascript
+      - name: Resolve package version
+        id: version
         run: |
-          version="${GITHUB_REF_NAME#v}"
-          npm version "$version" --no-git-tag-version --allow-same-version
+          if [ "${{ github.event_name }}" = "release" ]; then
+            version="${{ github.event.release.tag_name }}"
+            version="${version#v}"
+          else
+            version=$(node -p "require('./sdk/javascript/package.json').version")
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Sync SDK version
+        working-directory: sdk/javascript
+        run: npm version "${{ steps.version.outputs.version }}" --no-git-tag-version --allow-same-version
 
       - name: Build JavaScript SDK
         working-directory: sdk/javascript
@@ -43,7 +60,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --access public
-        continue-on-error: true
 
   pubdev:
     name: Publish bakend to pub.dev
@@ -52,14 +68,32 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Require PUB_CREDENTIALS
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+        run: |
+          if [ -z "$PUB_CREDENTIALS" ]; then
+            echo "PUB_CREDENTIALS secret is not configured"
+            exit 1
+          fi
+
       - uses: dart-lang/setup-dart@v1
 
-      - name: Sync SDK version with release tag
-        if: github.event_name == 'release'
+      - name: Resolve package version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            version="${{ github.event.release.tag_name }}"
+            version="${version#v}"
+          else
+            version=$(grep '^version:' sdk/dart/pubspec.yaml | awk '{print $2}')
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Sync SDK version
         working-directory: sdk/dart
         run: |
-          version="${GITHUB_REF_NAME#v}"
-          sed -i "s/^version: .*/version: ${version}/" pubspec.yaml
+          sed -i "s/^version: .*/version: ${{ steps.version.outputs.version }}/" pubspec.yaml
 
       - name: Dry run publish
         working-directory: sdk/dart
@@ -70,4 +104,3 @@ jobs:
         env:
           PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
         run: dart pub publish --force
-        continue-on-error: true

@@ -1,6 +1,11 @@
 name: bakend
-description: Bakend client SDK for Dart and Flutter
+description: Bakend client SDK for Dart and Flutter — auth, CRUD, storage, and realtime.
 version: 1.0.1
+homepage: https://alpbak.github.io/bakend/
+repository: https://github.com/alpbak/bakend
+issue_tracker: https://github.com/alpbak/bakend/issues
+documentation: https://alpbak.github.io/bakend/docs/sdk/dart/
+license: MIT
 
 environment:
   sdk: ^3.5.0
@@ -11,5 +16,3 @@ dependencies:
 
 dev_dependencies:
   test: ^1.25.8
-
-repository: https://github.com/alpbak/bakend

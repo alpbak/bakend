@@ -4,6 +4,13 @@ All notable changes to Bakend are documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- SDK publishing guide: `docs/sdk/publishing.md`.
+- SDK package metadata for npm and pub.dev (LICENSE, CHANGELOG, README, pubspec fields).
+- CI: `sdk-registry-check` job runs `dart pub publish --dry-run` and `npm pack` on SDK changes.
+- CI: hardened `sdk-publish.yml` (release tag version sync, fail without secrets).
+
 ## [1.0.1] — 2026-06-09
 
 ### Fixed

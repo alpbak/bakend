@@ -1,8 +1,12 @@
 # Bakend Dart SDK
 
-Client library for Dart and Flutter applications.
+Client library for Dart and Flutter applications connecting to a [Bakend](https://alpbak.github.io/bakend/) server.
 
-**Milestone:** 11 — SDKs
+## Install
+
+```bash
+dart pub add bakend
+```
 
 ## Usage
 
@@ -19,14 +23,11 @@ final posts = client.collection('posts');
 final post = await posts.create({'title': 'Hello'});
 ```
 
-See [docs/sdk/dart.md](../../docs/sdk/dart.md) for full API reference.
+## Documentation
 
-## Tests
+- [Dart SDK guide](https://alpbak.github.io/bakend/docs/sdk/dart/)
+- [Bakend documentation](https://alpbak.github.io/bakend/docs/)
 
-Requires Bun (to start the test server):
+## License
 
-```bash
-cd sdk/dart
-dart pub get
-dart test
-```
+MIT

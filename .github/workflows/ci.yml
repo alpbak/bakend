@@ -47,6 +47,25 @@ jobs:
       - run: bun install
       - run: bun run typecheck
 
+  sdk-registry-check:
+    name: SDK publish dry-run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: latest
+      - uses: dart-lang/setup-dart@v1
+      - name: JavaScript SDK pack check
+        working-directory: sdk/javascript
+        run: |
+          npm install typescript --no-save
+          npm run build
+          npm pack --dry-run
+      - name: Dart SDK publish dry-run
+        working-directory: sdk/dart
+        run: dart pub publish --dry-run
+
   test:
     name: Test
     runs-on: ubuntu-latest

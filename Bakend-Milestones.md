@@ -377,7 +377,7 @@ Success Criteria:
 
 Bakend delivers its full vision.
 
-Status: **Complete** (v1.0.0 — 2026-06-09)
+Status: **Complete** (v1.0.1 — 2026-06-09; SDK registry publish via `docs/sdk/publishing.md`)
 
 ---
 
